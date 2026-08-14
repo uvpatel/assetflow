@@ -9,4 +9,5 @@ public interface AssetAllocationRepository {
     Optional<AssetAllocation> findById(UUID id);
     Optional<AssetAllocation> findActiveByAssetId(UUID assetId);
     List<AssetAllocation> findByOrganizationId(UUID organizationId);
+    List<AssetAllocation> findOverdueAllocations(java.time.Instant now);
 }

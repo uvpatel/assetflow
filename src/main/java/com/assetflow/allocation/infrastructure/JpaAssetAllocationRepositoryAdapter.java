@@ -15,6 +15,9 @@ interface SpringDataAssetAllocationRepository extends JpaRepository<AssetAllocat
 
     @Query("SELECT a FROM AssetAllocation a WHERE a.assetId = :assetId AND a.returnedAt IS NULL")
     Optional<AssetAllocation> findActiveByAssetId(UUID assetId);
+
+    @Query("SELECT a FROM AssetAllocation a WHERE a.returnedAt IS NULL AND a.expectedReturnAt IS NOT NULL AND a.expectedReturnAt < :now")
+    List<AssetAllocation> findOverdueAllocations(java.time.Instant now);
 }
 
 @Repository
@@ -44,5 +47,10 @@ public class JpaAssetAllocationRepositoryAdapter implements AssetAllocationRepos
     @Override
     public List<AssetAllocation> findByOrganizationId(UUID organizationId) {
         return repository.findByOrganizationId(organizationId);
+    }
+
+    @Override
+    public List<AssetAllocation> findOverdueAllocations(java.time.Instant now) {
+        return repository.findOverdueAllocations(now);
     }
 }
