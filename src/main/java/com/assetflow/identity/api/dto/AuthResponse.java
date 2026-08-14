@@ -1,6 +1,6 @@
 package com.assetflow.identity.api.dto;
 
-import com.assetflow.identity.domain.Role;
+import com.assetflow.identity.domain.UserRole;
 import com.assetflow.identity.domain.UserStatus;
 
 import java.util.UUID;
@@ -10,7 +10,7 @@ public class AuthResponse {
     private UUID userId;
     private UUID organizationId;
     private String email;
-    private Role role;
+    private UserRole role;
     private UserStatus status;
     private String accessToken;
     private String refreshToken;
@@ -18,7 +18,7 @@ public class AuthResponse {
     public AuthResponse() {
     }
 
-    public AuthResponse(UUID userId, UUID organizationId, String email, Role role, UserStatus status, String accessToken, String refreshToken) {
+    public AuthResponse(UUID userId, UUID organizationId, String email, UserRole role, UserStatus status, String accessToken, String refreshToken) {
         this.userId = userId;
         this.organizationId = organizationId;
         this.email = email;
@@ -52,11 +52,11 @@ public class AuthResponse {
         this.email = email;
     }
 
-    public Role getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 

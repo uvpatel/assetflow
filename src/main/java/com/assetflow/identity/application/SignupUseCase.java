@@ -2,7 +2,6 @@ package com.assetflow.identity.application;
 
 import com.assetflow.identity.api.dto.AuthResponse;
 import com.assetflow.identity.api.dto.SignupRequest;
-import com.assetflow.identity.domain.Role;
 import com.assetflow.identity.domain.UserAccount;
 import com.assetflow.identity.domain.UserAccountRepository;
 import com.assetflow.shared.error.DomainViolationException;
@@ -28,11 +27,10 @@ public class SignupUseCase {
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
-        UserAccount account = new UserAccount(
-                request.getOrganizationId(),
+        UserAccount account = UserAccount.createEmployee(
                 request.getEmail(),
                 encodedPassword,
-                Role.EMPLOYEE // Force non-self-elevating role security
+                request.getOrganizationId()
         );
 
         UserAccount saved = userRepository.save(account);
