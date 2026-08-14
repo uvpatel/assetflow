@@ -3,8 +3,8 @@ package com.assetflow.allocation.application;
 import com.assetflow.allocation.domain.AssetAllocation;
 import com.assetflow.allocation.domain.AssetAllocationRepository;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-import org.slf.Logger;
-import org.slf.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
