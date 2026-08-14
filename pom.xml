@@ -115,6 +115,13 @@
             <version>${org.mapstruct.version}</version>
         </dependency>
 
+        <!-- PDF Export -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
         <!-- Testing Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
