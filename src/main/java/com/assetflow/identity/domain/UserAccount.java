@@ -1,91 +1,86 @@
 package com.assetflow.identity.domain;
 
-import com.assetflow.shared.persistence.BaseEntity;
-import jakarta.persistence.*;
-
+import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
-@Entity
-@Table(name = "user_accounts")
-public class UserAccount extends BaseEntity {
+public class UserAccount {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
-    @Column(name = "organization_id", nullable = false)
-    private UUID organizationId;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(name = "password_hash", nullable = false)
+    private final UUID id;
+    private final String email;
     private String passwordHash;
+    private final UUID organizationId;
+    private UserStatus status;
+    private UserRole role;
+    private final Instant createdAt;
+    private Instant updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role = Role.EMPLOYEE;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserStatus status = UserStatus.ACTIVE;
-
-    public UserAccount() {
+    public UserAccount(UUID id, String email, String passwordHash, UUID organizationId,
+                       UserStatus status, UserRole role, Instant createdAt, Instant updatedAt) {
+        this.id = Objects.requireNonNull(id, "User ID cannot be null");
+        this.email = Objects.requireNonNull(email, "Email cannot be null").trim().toLowerCase();
+        this.passwordHash = Objects.requireNonNull(passwordHash, "Password hash cannot be null");
+        this.organizationId = Objects.requireNonNull(organizationId, "Organization ID cannot be null");
+        this.status = Objects.requireNonNull(status, "Status cannot be null");
+        this.role = Objects.requireNonNull(role, "Role cannot be null");
+        this.createdAt = createdAt != null ? createdAt : Instant.now();
+        this.updatedAt = updatedAt != null ? updatedAt : Instant.now();
     }
 
-    public UserAccount(UUID organizationId, String email, String passwordHash, Role role) {
-        this.organizationId = organizationId;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.role = role != null ? role : Role.EMPLOYEE;
-        this.status = UserStatus.ACTIVE;
+    public static UserAccount createEmployee(String email, String passwordHash, UUID organizationId) {
+        UUID newId = UUID.randomUUID();
+        Instant now = Instant.now();
+        return new UserAccount(newId, email, passwordHash, organizationId, UserStatus.ACTIVE, UserRole.EMPLOYEE, now, now);
     }
 
     public UUID getId() {
         return id;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getOrganizationId() {
-        return organizationId;
-    }
-
-    public void setOrganizationId(UUID organizationId) {
-        this.organizationId = organizationId;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPasswordHash() {
         return passwordHash;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public UUID getOrganizationId() {
+        return organizationId;
     }
 
     public UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(UserStatus status) {
-        this.status = status;
+    public UserRole getRole() {
+        return role;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void updateRole(UserRole newRole) {
+        this.role = Objects.requireNonNull(newRole, "New role cannot be null");
+        this.updatedAt = Instant.now();
+    }
+
+    public void updateStatus(UserStatus newStatus) {
+        this.status = Objects.requireNonNull(newStatus, "New status cannot be null");
+        this.updatedAt = Instant.now();
+    }
+
+    public void updatePasswordHash(String newPasswordHash) {
+        this.passwordHash = Objects.requireNonNull(newPasswordHash, "New password hash cannot be null");
+        this.updatedAt = Instant.now();
+    }
+
+    public boolean isActive() {
+        return this.status == UserStatus.ACTIVE;
     }
 }
