@@ -2,6 +2,7 @@ package com.assetflow.identity.application;
 
 import com.assetflow.identity.api.dto.RefreshTokenRequest;
 import com.assetflow.identity.api.dto.TokenRefreshResponse;
+import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.identity.domain.RefreshToken;
 import com.assetflow.identity.domain.RefreshTokenRepository;
 import com.assetflow.identity.domain.UserAccount;
@@ -9,7 +10,6 @@ import com.assetflow.identity.domain.UserAccountRepository;
 import com.assetflow.identity.domain.UserRole;
 import com.assetflow.identity.domain.UserStatus;
 import com.assetflow.identity.infrastructure.security.JwtProperties;
-import com.assetflow.identity.infrastructure.security.JwtTokenProvider;
 import com.assetflow.shared.error.DomainViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class RefreshTokenUseCaseTest {
     private UserAccountRepository userRepository;
 
     @Mock
-    private JwtTokenProvider jwtTokenProvider;
+    private TokenProviderPort tokenProvider;
 
     private JwtProperties jwtProperties;
     private RefreshTokenUseCase refreshTokenUseCase;
@@ -48,7 +48,7 @@ class RefreshTokenUseCaseTest {
         jwtProperties = new JwtProperties();
         jwtProperties.setAccessTokenExpirationSeconds(900);
         jwtProperties.setRefreshTokenExpirationSeconds(604800);
-        refreshTokenUseCase = new RefreshTokenUseCase(refreshTokenRepository, userRepository, jwtTokenProvider, jwtProperties);
+        refreshTokenUseCase = new RefreshTokenUseCase(refreshTokenRepository, userRepository, tokenProvider, jwtProperties);
     }
 
     @Test
@@ -63,7 +63,7 @@ class RefreshTokenUseCaseTest {
 
         when(refreshTokenRepository.findByTokenHash(tokenHash)).thenReturn(Optional.of(existingToken));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(jwtTokenProvider.generateAccessToken(user)).thenReturn("newAccessToken");
+        when(tokenProvider.generateAccessToken(user)).thenReturn("newAccessToken");
         when(refreshTokenRepository.save(any(RefreshToken.class))).thenAnswer(inv -> inv.getArgument(0));
 
         TokenRefreshResponse response = refreshTokenUseCase.execute(new RefreshTokenRequest(rawToken));

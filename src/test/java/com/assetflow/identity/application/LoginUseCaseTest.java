@@ -3,6 +3,7 @@ package com.assetflow.identity.application;
 import com.assetflow.identity.api.dto.AuthResponse;
 import com.assetflow.identity.api.dto.LoginRequest;
 import com.assetflow.identity.application.port.PasswordEncoderPort;
+import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.identity.domain.RefreshToken;
 import com.assetflow.identity.domain.RefreshTokenRepository;
 import com.assetflow.identity.domain.UserAccount;
@@ -10,7 +11,6 @@ import com.assetflow.identity.domain.UserAccountRepository;
 import com.assetflow.identity.domain.UserRole;
 import com.assetflow.identity.domain.UserStatus;
 import com.assetflow.identity.infrastructure.security.JwtProperties;
-import com.assetflow.identity.infrastructure.security.JwtTokenProvider;
 import com.assetflow.shared.error.DomainViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class LoginUseCaseTest {
     private PasswordEncoderPort passwordEncoder;
 
     @Mock
-    private JwtTokenProvider jwtTokenProvider;
+    private TokenProviderPort tokenProvider;
 
     private JwtProperties jwtProperties;
     private LoginUseCase loginUseCase;
@@ -51,7 +51,7 @@ class LoginUseCaseTest {
         jwtProperties = new JwtProperties();
         jwtProperties.setAccessTokenExpirationSeconds(900);
         jwtProperties.setRefreshTokenExpirationSeconds(604800);
-        loginUseCase = new LoginUseCase(userRepository, refreshTokenRepository, passwordEncoder, jwtTokenProvider, jwtProperties);
+        loginUseCase = new LoginUseCase(userRepository, refreshTokenRepository, passwordEncoder, tokenProvider, jwtProperties);
     }
 
     @Test
@@ -67,7 +67,7 @@ class LoginUseCaseTest {
 
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("password123", "encodedHash")).thenReturn(true);
-        when(jwtTokenProvider.generateAccessToken(user)).thenReturn("mockedAccessToken");
+        when(tokenProvider.generateAccessToken(user)).thenReturn("mockedAccessToken");
         when(refreshTokenRepository.save(any(RefreshToken.class))).thenAnswer(inv -> inv.getArgument(0));
 
         AuthResponse response = loginUseCase.execute(request);

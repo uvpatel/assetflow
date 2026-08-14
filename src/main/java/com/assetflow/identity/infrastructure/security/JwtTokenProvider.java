@@ -1,5 +1,6 @@
 package com.assetflow.identity.infrastructure.security;
 
+import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.identity.domain.UserAccount;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -14,7 +15,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Component
-public class JwtTokenProvider {
+public class JwtTokenProvider implements TokenProviderPort {
 
     private final JwtProperties jwtProperties;
 

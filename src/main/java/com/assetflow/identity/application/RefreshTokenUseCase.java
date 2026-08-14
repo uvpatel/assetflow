@@ -2,12 +2,12 @@ package com.assetflow.identity.application;
 
 import com.assetflow.identity.api.dto.RefreshTokenRequest;
 import com.assetflow.identity.api.dto.TokenRefreshResponse;
+import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.identity.domain.RefreshToken;
 import com.assetflow.identity.domain.RefreshTokenRepository;
 import com.assetflow.identity.domain.UserAccount;
 import com.assetflow.identity.domain.UserAccountRepository;
 import com.assetflow.identity.infrastructure.security.JwtProperties;
-import com.assetflow.identity.infrastructure.security.JwtTokenProvider;
 import com.assetflow.shared.error.DomainViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,16 +20,16 @@ public class RefreshTokenUseCase {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserAccountRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProviderPort tokenProvider;
     private final JwtProperties jwtProperties;
 
     public RefreshTokenUseCase(RefreshTokenRepository refreshTokenRepository,
                                 UserAccountRepository userRepository,
-                                JwtTokenProvider jwtTokenProvider,
+                                TokenProviderPort tokenProvider,
                                 JwtProperties jwtProperties) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.userRepository = userRepository;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
         this.jwtProperties = jwtProperties;
     }
 
@@ -71,7 +71,7 @@ public class RefreshTokenUseCase {
         RefreshToken newRefreshToken = RefreshToken.create(user.getId(), newTokenHash, expiresAt);
         refreshTokenRepository.save(newRefreshToken);
 
-        String newAccessToken = jwtTokenProvider.generateAccessToken(user);
+        String newAccessToken = tokenProvider.generateAccessToken(user);
 
         return new TokenRefreshResponse(
                 newAccessToken,

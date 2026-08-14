@@ -4,12 +4,12 @@ import com.assetflow.identity.api.dto.AuthResponse;
 import com.assetflow.identity.api.dto.LoginRequest;
 import com.assetflow.identity.api.dto.UserSummaryDto;
 import com.assetflow.identity.application.port.PasswordEncoderPort;
+import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.identity.domain.RefreshToken;
 import com.assetflow.identity.domain.RefreshTokenRepository;
 import com.assetflow.identity.domain.UserAccount;
 import com.assetflow.identity.domain.UserAccountRepository;
 import com.assetflow.identity.infrastructure.security.JwtProperties;
-import com.assetflow.identity.infrastructure.security.JwtTokenProvider;
 import com.assetflow.shared.error.DomainViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +27,18 @@ public class LoginUseCase {
     private final UserAccountRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoderPort passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final TokenProviderPort tokenProvider;
     private final JwtProperties jwtProperties;
 
     public LoginUseCase(UserAccountRepository userRepository,
                         RefreshTokenRepository refreshTokenRepository,
                         PasswordEncoderPort passwordEncoder,
-                        JwtTokenProvider jwtTokenProvider,
+                        TokenProviderPort tokenProvider,
                         JwtProperties jwtProperties) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.tokenProvider = tokenProvider;
         this.jwtProperties = jwtProperties;
     }
 
@@ -56,7 +56,7 @@ public class LoginUseCase {
             throw new DomainViolationException("Account Inactive", "User account is not active.");
         }
 
-        String accessToken = jwtTokenProvider.generateAccessToken(user);
+        String accessToken = tokenProvider.generateAccessToken(user);
         String rawRefreshToken = UUID.randomUUID().toString();
         String tokenHash = hashToken(rawRefreshToken);
 

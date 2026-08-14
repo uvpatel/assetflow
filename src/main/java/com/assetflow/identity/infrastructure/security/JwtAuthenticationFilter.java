@@ -1,5 +1,6 @@
 package com.assetflow.identity.infrastructure.security;
 
+import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.shared.security.TenantAuthenticationDetails;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -20,9 +21,9 @@ import java.util.UUID;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider tokenProvider;
+    private final TokenProviderPort tokenProvider;
 
-    public JwtAuthenticationFilter(JwtTokenProvider tokenProvider) {
+    public JwtAuthenticationFilter(TokenProviderPort tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
 
@@ -32,17 +33,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = resolveToken(request);
 
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
-            Claims claims = tokenProvider.getClaims(token);
-            String userId = claims.getSubject();
-            String role = claims.get("role", String.class);
-            String organizationIdStr = claims.get("organizationId", String.class);
+            UUID userId = tokenProvider.getUserIdFromToken(token);
+            UUID organizationId = tokenProvider.getOrganizationIdFromToken(token);
+            String role = tokenProvider.getRoleFromToken(token);
 
-            if (userId != null && organizationIdStr != null && role != null) {
-                UUID organizationId = UUID.fromString(organizationIdStr);
+            if (userId != null && organizationId != null && role != null) {
                 List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userId, null, authorities
+                        userId.toString(), null, authorities
                 );
                 authentication.setDetails(new TenantAuthenticationDetails(organizationId));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

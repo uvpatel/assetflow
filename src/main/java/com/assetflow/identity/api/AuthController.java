@@ -38,8 +38,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserSummaryDto> signup(@Valid @RequestBody SignupRequest request) {
-        UserSummaryDto response = signupUseCase.execute(request);
+    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest request) {
+        AuthResponse response = signupUseCase.execute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

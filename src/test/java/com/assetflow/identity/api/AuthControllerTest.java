@@ -12,7 +12,7 @@ import com.assetflow.identity.application.RefreshTokenUseCase;
 import com.assetflow.identity.application.SignupUseCase;
 import com.assetflow.identity.domain.UserRole;
 import com.assetflow.identity.domain.UserStatus;
-import com.assetflow.identity.infrastructure.security.JwtTokenProvider;
+import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.shared.error.DomainViolationException;
 import com.assetflow.shared.error.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,14 +58,15 @@ class AuthControllerTest {
     private LogoutUseCase logoutUseCase;
 
     @MockitoBean
-    private JwtTokenProvider jwtTokenProvider;
+    private TokenProviderPort tokenProvider;
 
     @Test
     void shouldReturn201OnSuccessfulSignup() throws Exception {
         UUID userId = UUID.randomUUID();
         UUID orgId = UUID.randomUUID();
         SignupRequest request = new SignupRequest("user@example.com", "password123", orgId, null);
-        UserSummaryDto response = new UserSummaryDto(userId, "user@example.com", orgId, UserRole.EMPLOYEE, UserStatus.ACTIVE);
+        UserSummaryDto userSummary = new UserSummaryDto(userId, "user@example.com", orgId, UserRole.EMPLOYEE, UserStatus.ACTIVE);
+        AuthResponse response = new AuthResponse("access_token", "refresh_token", 3600L, userSummary);
 
         when(signupUseCase.execute(any(SignupRequest.class))).thenReturn(response);
 
@@ -73,9 +74,9 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(userId.toString()))
-                .andExpect(jsonPath("$.email").value("user@example.com"))
-                .andExpect(jsonPath("$.role").value("EMPLOYEE"));
+                .andExpect(jsonPath("$.user.id").value(userId.toString()))
+                .andExpect(jsonPath("$.user.email").value("user@example.com"))
+                .andExpect(jsonPath("$.user.role").value("EMPLOYEE"));
     }
 
     @Test

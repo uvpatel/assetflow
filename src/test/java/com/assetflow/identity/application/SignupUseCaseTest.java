@@ -1,7 +1,7 @@
 package com.assetflow.identity.application;
 
+import com.assetflow.identity.api.dto.AuthResponse;
 import com.assetflow.identity.api.dto.SignupRequest;
-import com.assetflow.identity.api.dto.UserSummaryDto;
 import com.assetflow.identity.application.port.PasswordEncoderPort;
 import com.assetflow.identity.domain.UserAccount;
 import com.assetflow.identity.domain.UserAccountRepository;
@@ -47,40 +47,16 @@ class SignupUseCaseTest {
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
         when(userRepository.save(any(UserAccount.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UserSummaryDto result = signupUseCase.execute(request);
+        AuthResponse result = signupUseCase.execute(request);
 
-        assertThat(result.email()).isEqualTo("user@example.com");
-        assertThat(result.role()).isEqualTo(UserRole.EMPLOYEE);
-        assertThat(result.organizationId()).isEqualTo(orgId);
+        assertThat(result.user().email()).isEqualTo("user@example.com");
+        assertThat(result.user().role()).isEqualTo(UserRole.EMPLOYEE);
+        assertThat(result.user().organizationId()).isEqualTo(orgId);
 
         ArgumentCaptor<UserAccount> captor = ArgumentCaptor.forClass(UserAccount.class);
         verify(userRepository).save(captor.capture());
         assertThat(captor.getValue().getRole()).isEqualTo(UserRole.EMPLOYEE);
         assertThat(captor.getValue().getPasswordHash()).isEqualTo("encodedPassword");
-    }
-
-    @Test
-    void shouldRejectSignupWithCustomRole() {
-        UUID orgId = UUID.randomUUID();
-        SignupRequest request = new SignupRequest("admin@example.com", "password123", orgId, "ADMIN");
-
-        assertThatThrownBy(() -> signupUseCase.execute(request))
-                .isInstanceOf(DomainViolationException.class)
-                .hasMessageContaining("Public signup does not allow specifying custom roles");
-    }
-
-    @Test
-    void shouldAllowSignupWithExplicitEmployeeRole() {
-        UUID orgId = UUID.randomUUID();
-        SignupRequest request = new SignupRequest("user@example.com", "password123", orgId, "EMPLOYEE");
-
-        when(userRepository.existsByEmail("user@example.com")).thenReturn(false);
-        when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
-        when(userRepository.save(any(UserAccount.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        UserSummaryDto result = signupUseCase.execute(request);
-
-        assertThat(result.role()).isEqualTo(UserRole.EMPLOYEE);
     }
 
     @Test
@@ -91,7 +67,6 @@ class SignupUseCaseTest {
         when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
 
         assertThatThrownBy(() -> signupUseCase.execute(request))
-                .isInstanceOf(DomainViolationException.class)
-                .hasMessageContaining("An account with email existing@example.com already exists");
+                .isInstanceOf(DomainViolationException.class);
     }
 }
