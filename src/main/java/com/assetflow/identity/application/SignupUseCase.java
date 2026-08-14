@@ -2,10 +2,11 @@ package com.assetflow.identity.application;
 
 import com.assetflow.identity.api.dto.AuthResponse;
 import com.assetflow.identity.api.dto.SignupRequest;
+import com.assetflow.identity.api.dto.UserSummaryDto;
+import com.assetflow.identity.application.port.PasswordEncoderPort;
 import com.assetflow.identity.domain.UserAccount;
 import com.assetflow.identity.domain.UserAccountRepository;
 import com.assetflow.shared.error.DomainViolationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,36 +14,33 @@ import org.springframework.transaction.annotation.Transactional;
 public class SignupUseCase {
 
     private final UserAccountRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoderPort passwordEncoder;
 
-    public SignupUseCase(UserAccountRepository userRepository, PasswordEncoder passwordEncoder) {
+    public SignupUseCase(UserAccountRepository userRepository, PasswordEncoderPort passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     public AuthResponse execute(SignupRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new DomainViolationException("User with email " + request.getEmail() + " already exists");
+        if (userRepository.existsByEmail(request.email())) {
+            throw new DomainViolationException("User with email " + request.email() + " already exists");
         }
 
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedPassword = passwordEncoder.encode(request.password());
         UserAccount account = UserAccount.createEmployee(
-                request.getEmail(),
+                request.email(),
                 encodedPassword,
-                request.getOrganizationId()
+                request.organizationId()
         );
 
         UserAccount saved = userRepository.save(account);
 
         return new AuthResponse(
-                saved.getId(),
-                saved.getOrganizationId(),
-                saved.getEmail(),
-                saved.getRole(),
-                saved.getStatus(),
                 "dummy_access_token",
-                "dummy_refresh_token"
+                "dummy_refresh_token",
+                3600L,
+                UserSummaryDto.fromDomain(saved)
         );
     }
 }
