@@ -1,11 +1,11 @@
 # AssetFlow
 
-> Enterprise Asset & Resource Management System built with Java 21, Spring Boot 3/4, PostgreSQL, and Next.js 15/16.
+> Backend-only Enterprise Asset & Resource Management System built with Java 25, Spring Boot 4.1, PostgreSQL, and production-grade REST APIs.
 
 [![CI Pipeline](https://github.com/assetflow/assetflow/actions/workflows/ci.yml/badge.svg)](https://github.com/assetflow/assetflow/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-AssetFlow is a modular monolith ERP application for enterprise asset management, shared resource booking, maintenance workflow, multi-tenant organization control, and audit cycle execution.
+AssetFlow is a modular monolith ERP backend system for enterprise asset management, shared resource booking, maintenance workflow, multi-tenant organization control, and audit cycle execution.
 
 ---
 
@@ -13,11 +13,12 @@ AssetFlow is a modular monolith ERP application for enterprise asset management,
 
 ```text
 assetflow/
-├── backend/            # Spring Boot REST API (Modular Monolith, Java 21)
-├── frontend/           # Next.js Web Application (React, Tailwind CSS, shadcn/ui)
-├── infrastructure/     # Docker Compose, Monitoring & Deployment configs
-├── docs/               # Architecture decisions (ADRs) & API specs
-└── PLAN.md             # Master Engineering & Delivery Plan
+├── src/main/java/com/assetflow/  # Spring Boot REST API (Modular Monolith, Java 25)
+├── src/main/resources/          # DB Migrations (Flyway) & App Configs
+├── src/test/java/com/assetflow/  # Unit, Integration & ArchUnit Tests
+├── infrastructure/               # Docker Compose, Monitoring & Deployment configs
+├── docs/                         # Architecture decisions (ADRs) & API specs
+└── PLAN.md                       # Master Backend Engineering & Delivery Plan
 ```
 
 ### Module Boundaries (`com.assetflow`)
@@ -40,8 +41,7 @@ assetflow/
 ### Prerequisites
 
 - **Docker & Docker Compose** (v20+)
-- **Java 21 LTS**
-- **Node.js** (v20+ or v24+)
+- **Java 25 LTS**
 
 ### 1. Launch Local Infrastructure (PostgreSQL, MinIO, Mailpit)
 
@@ -57,22 +57,11 @@ Services will be accessible at:
 ### 2. Run Backend (Spring Boot)
 
 ```bash
-cd backend
 ./mvnw spring-boot:run
 ```
 
 The REST API will start at `http://localhost:8080/api/v1`.
 OpenAPI / Swagger documentation available at `http://localhost:8080/swagger-ui.html`.
-
-### 3. Run Frontend (Next.js)
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-The web application will start at `http://localhost:3000`.
 
 ---
 
@@ -81,22 +70,14 @@ The web application will start at `http://localhost:3000`.
 ### Run Backend Tests (Unit + Integration + ArchUnit)
 
 ```bash
-cd backend
 ./mvnw clean verify
-```
-
-### Run Frontend Tests
-
-```bash
-cd frontend
-npm run test
 ```
 
 ---
 
 ## 📜 Documentation
 
-- [Master Engineering Plan (PLAN.md)](PLAN.md)
+- [Master Backend Engineering Plan (PLAN.md)](PLAN.md)
 - [Architecture Decision Records (ADRs)](docs/adr/)
 - [Contributing Guidelines](CONTRIBUTING.md)
 - [Security Policy](SECURITY.md)

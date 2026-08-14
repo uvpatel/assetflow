@@ -1,12 +1,12 @@
 # AssetFlow — Engineering & Delivery Plan
 
-> Enterprise Asset & Resource Management System built with Java, Spring Boot, PostgreSQL, and Next.js.
+> Backend-only Enterprise Asset & Resource Management System built with Java, Spring Boot, PostgreSQL, and production-grade REST APIs.
 
 ## 1. Document Purpose
 
-This document is the master implementation plan for AssetFlow. It defines product scope, architecture, domain rules, security boundaries, development phases, testing strategy, GitHub workflow, and the path toward 1,000+ meaningful commits and 200+ reviewable pull requests.
+This document is the master backend implementation plan for AssetFlow. It defines product scope, architecture, domain rules, security boundaries, REST APIs, development phases, testing strategy, GitHub workflow, and the path toward 1,000+ meaningful commits and 200+ reviewable pull requests.
 
-The project is developed as a production-style ERP system, not as a collection of disconnected CRUD screens.
+The project should be developed as a production-style ERP system, not as a collection of disconnected CRUD screens.
 
 ---
 
@@ -28,83 +28,97 @@ AssetFlow intentionally excludes purchasing, invoicing, payroll, and accounting.
 
 ---
 
-## 3. Recommended Architecture
+## 3. Product Goals
 
-```mermaid
-flowchart TD
-    UI["Next.js Web App"] --> API["Spring Boot REST API"]
-    API --> SEC["Security & RBAC"]
-    API --> ORG["Organization"]
-    API --> AST["Asset Lifecycle"]
-    API --> ALO["Allocation & Transfer"]
-    API --> BKG["Resource Booking"]
-    API --> MNT["Maintenance"]
-    API --> AUD["Audit Cycles"]
-    API --> RPT["Reports"]
-    API --> NTF["Notifications & Logs"]
-    ORG & AST & ALO & BKG & MNT & AUD & RPT & NTF --> DB["PostgreSQL"]
-    NTF --> MAIL["Email Provider / Mailpit"]
-    API --> OBJ["MinIO / S3 Storage"]
-```
+- Replace spreadsheets and paper logs with structured workflows.
+- Prevent double allocation and overlapping bookings.
+- Enforce valid asset lifecycle transitions.
+- Provide secure, non-self-elevating role management.
+- Maintain immutable operational history and activity logs.
+- Support multiple organizations with strict tenant isolation.
+- Deliver actionable dashboards, notifications, and reports.
+- Demonstrate professional Java, Spring Boot, testing, CI/CD, and Git practices.
 
 ---
 
-## 4. Package Structure & Module Isolation
+## 4. Non-Goals for Version 1
+
+- Procurement and vendor management
+- Purchase orders and invoices
+- General ledger or accounting integration
+- Payroll and attendance
+- IoT device tracking
+- Web and native mobile user interfaces
+- Microservices
+- AI-based predictive maintenance
+
+These can be evaluated only after the core platform is stable.
+
+---
+
+## 5. Architecture & Module Layout
 
 AssetFlow is structured as a **Modular Monolith** using **Package-by-Feature**:
 
 ```text
-assetflow/
-├── backend/
-│   ├── src/main/java/com/assetflow/
-│   │   ├── shared/
-│   │   ├── identity/
-│   │   ├── organization/
-│   │   ├── asset/
-│   │   ├── allocation/
-│   │   ├── booking/
-│   │   ├── maintenance/
-│   │   ├── audit/
-│   │   ├── notification/
-│   │   ├── reporting/
-│   │   └── activitylog/
-│   ├── src/test/
-│   └── pom.xml
-├── frontend/
-├── infrastructure/
-├── docs/
-├── .github/
-└── docker-compose.yml
+com.assetflow
+├── shared
+│   ├── config
+│   ├── error
+│   ├── security
+│   ├── persistence
+│   └── events
+├── identity
+├── organization
+├── asset
+├── allocation
+├── booking
+├── maintenance
+├── audit
+├── notification
+├── reporting
+└── activitylog
 ```
 
-Each module adheres to clean internal layering:
+Each business module adheres to clean internal layering:
 
 ```text
-asset/
-├── api/             # Controllers, Request/Response DTOs
-├── application/     # Use cases, Application Services, Mappers
-├── domain/          # Aggregates, Value Objects, Domain Services, Repositories (Interfaces)
-└── infrastructure/  # JPA Repositories, Persistence Adapters, Storage Integrations
+module
+├── api              # controllers and HTTP DTOs
+├── application      # use cases, commands, queries, transaction boundaries
+├── domain           # entities, value objects, policies, repository contracts
+└── infrastructure   # JPA, storage, messaging, integrations
 ```
+
+### Module Dependency Rules
+- API depends on application.
+- Application depends on domain.
+- Infrastructure implements domain ports.
+- Domain must not depend on controllers, JPA repositories, or external services.
+- Modules communicate through application interfaces or domain events.
+- Direct access to another module's database repository is prohibited.
+- ArchUnit tests enforce these rules.
 
 ---
 
-## 5. Domain Rules & Core Invariants
+## 6. Core Domain Rules & Invariants
 
-### 1. Multi-Tenant Isolation
+### 1. Account Creation & Role Elevation Security
+- Public signup creates an Employee only.
+- Signup requests never accept a role field.
+- Privileged roles are assigned only from the employee directory by an authorized Admin.
+- The initial organization Admin is created through a secure bootstrap or invitation workflow.
+- Every role change creates an activity-log entry.
+
+### 2. Multi-Tenant Isolation
 - Every tenant-owned table contains `organization_id`.
 - Tenant context is strictly resolved from the authenticated JWT session.
 - Accessing cross-tenant data yields `404 Not Found` or `403 Forbidden`.
 
-### 2. Role Elevation Security
-- Public signup always creates an `EMPLOYEE`.
-- Role elevation requires an explicit administrative workflow and creates an activity log entry.
-- Initial admin user is created via an explicit bootstrap CLI command or secure invite token.
-
 ### 3. Asset Lifecycle State Machine
 Supported statuses: `AVAILABLE`, `ALLOCATED`, `RESERVED`, `UNDER_MAINTENANCE`, `LOST`, `RETIRED`, `DISPOSED`.
 - Lifecycle updates pass exclusively through `AssetLifecycleService`.
-- Disposed assets cannot return to service.
+- Disposed assets cannot return to service. Retired assets require an explicit restoration policy. Lost assets cannot be allocated or booked.
 
 ### 4. Double-Allocation Prevention
 - Application-level pessimistic/optimistic locking during allocation.
@@ -121,37 +135,51 @@ Supported statuses: `AVAILABLE`, `ALLOCATED`, `RESERVED`, `UNDER_MAINTENANCE`, `
 - Enforced via PostgreSQL exclusion constraints and transactional validation.
 
 ### 6. Audit Immutability
-- Closed audit cycles generate discrepancies, apply state transitions, and lock immutable audit records in a single transactional operation.
+- An open audit contains a snapshot of assets in scope.
+- Closing generates discrepancies, applies approved state changes, writes logs, and locks the cycle in one transaction.
+- Closed cycles and their verification results are immutable.
 
 ---
 
-## 6. Implementation Roadmap Summary
+## 7. Recommended Technology Stack
 
-- **Phase 0**: Project Foundation, Architecture Docs, CI/CD pipelines, Docker Compose setup.
-- **Phase 1**: Identity, JWT Auth with Refresh Tokens, Tenant Isolation.
-- **Phase 2**: Organization, Departments, Employee Directory, Controlled Promotion.
-- **Phase 3**: Asset Category & Dynamic Fields, Tag Generator, Asset Directory & History.
-- **Phase 4**: Asset Allocation, Transfers, Overdue Detection & Notifications.
-- **Phase 5**: Shared Resource Booking, Overlap Protection, Calendar View.
-- **Phase 6**: Maintenance Requests, Approval Workflow, Technician Assignment & Resolution.
-- **Phase 7**: Audit Cycles, Scope Snapshots, Auditor Verification & Discrepancies.
-- **Phase 8**: Dashboards, Analytics, PDF/CSV Exports & Audit Logs.
+- **Core Platform**: Java 25 LTS, Spring Boot 4.1.x, Spring Framework 7.0.x, PostgreSQL, Flyway, Spring Security, Spring Data JPA, Spring Modulith, Bean Validation, MapStruct, springdoc-openapi, Jackson, Lombok (boilerplate only).
+- **Reporting & Storage**: Apache Commons CSV, Apache PDFBox, MinIO (local) / S3 (prod), Mailpit (local) / Transactional Email (prod).
+- **Testing**: JUnit 5, Mockito, AssertJ, Testcontainers, ArchUnit, Awaitility, REST Assured, WireMock, PIT (Mutation Testing).
+- **Infrastructure**: Docker Compose, ShedLock (distributed scheduling), Micrometer & Spring Boot Actuator.
 
 ---
 
-## 7. Delivery Strategy: PR & Commit Plan
+## 8. Implementation Roadmap Summary
 
-Total PR Target: **~242 Pull Requests** (~1,000+ meaningful commits).
+- **Phase 0**: Foundation & Governance (ADRs, CI Quality Gates, Docker Compose, Architecture).
+- **Phase 1**: Identity & Multi-Tenancy (Signup, JWT, Refresh Tokens, RBAC, Tenant Security).
+- **Phase 2**: Organization Setup (Departments, Employee Directory, Role Assignments, Locations).
+- **Phase 3**: Asset Catalog & Directory (Categories, Dynamic Fields, Tags, Files, Lifecycle Machine).
+- **Phase 4**: Allocation, Transfer & Return (Double-allocation checks, Overdue Jobs, Check-in/out).
+- **Phase 5**: Shared Resource Booking (Overlap constraints, Availability calendar, Reminders).
+- **Phase 6**: Maintenance Workflow (Requests, Technician assignment, Resolution & Asset Restoration).
+- **Phase 7**: Audit Cycles (Scope snapshot, Auditor verification, Discrepancies, Immutable closing).
+- **Phase 8**: Dashboard, Reports & Exports (projections, CSV/PDF async exports, Audit logs).
+- **Phase 9**: Notifications & Operational Hardening (Outbox pattern, ShedLock, Actuator, Security Audit).
+- **Phase 10**: Release Packaging & v1.0.0 (API Docs, Postman collection, Release tag).
 
-Workstream breakdown:
-- Foundation & Architecture: 16 PRs
-- CI/CD & Environment: 16 PRs
-- Identity & Security: 24 PRs
-- Organization & Employees: 22 PRs
-- Asset Management: 32 PRs
-- Allocation & Transfers: 28 PRs
-- Resource Booking: 22 PRs
-- Maintenance: 22 PRs
-- Audits: 22 PRs
-- Reports & Dashboard: 18 PRs
-- Notifications & Hardening: 20 PRs
+---
+
+## 9. Delivery Strategy: PR & Commit Plan (250+ PRs Target)
+
+| Workstream | Target PRs |
+|---|---:|
+| Product docs, ADRs, repository foundation | 14 |
+| Build, CI/CD, environments, and quality tooling | 18 |
+| Shared kernel, API conventions, and error handling | 16 |
+| Authentication, sessions, authorization, and tenant security | 28 |
+| Organization, departments, employees, and roles | 22 |
+| Asset categories, assets, files, search, and lifecycle | 30 |
+| Allocation, transfer, returns, and overdue rules | 28 |
+| Resource booking and reminders | 22 |
+| Maintenance workflow | 20 |
+| Audit cycles and discrepancies | 20 |
+| Dashboard queries, reports, and exports | 14 |
+| Notifications, logs, observability, hardening | 20 |
+| **Total** | **252** |
