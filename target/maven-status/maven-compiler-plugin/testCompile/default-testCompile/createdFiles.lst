@@ -1,1 +1,12 @@
+com/assetflow/identity/application/LoginUseCaseTest.class
+com/assetflow/identity/api/AuthControllerTest.class
 com/assetflow/ArchitectureTest.class
+com/assetflow/shared/security/TenantContextFilterTest.class
+com/assetflow/shared/security/TenantContextTest.class
+com/assetflow/shared/error/BusinessExceptionTest.class
+com/assetflow/identity/infrastructure/security/JwtTokenProviderTest.class
+com/assetflow/shared/persistence/BaseEntityTest$TestEntity.class
+com/assetflow/identity/application/SignupUseCaseTest.class
+com/assetflow/shared/error/GlobalExceptionHandlerTest.class
+com/assetflow/identity/application/RefreshTokenUseCaseTest.class
+com/assetflow/shared/persistence/BaseEntityTest.class

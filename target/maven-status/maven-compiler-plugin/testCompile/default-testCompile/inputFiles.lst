@@ -1,1 +1,11 @@
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/ArchitectureTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/api/AuthControllerTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/application/LoginUseCaseTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/application/RefreshTokenUseCaseTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/application/SignupUseCaseTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/infrastructure/security/JwtTokenProviderTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/error/BusinessExceptionTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/error/GlobalExceptionHandlerTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/persistence/BaseEntityTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/security/TenantContextFilterTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/security/TenantContextTest.java
