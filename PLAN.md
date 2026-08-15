@@ -143,7 +143,7 @@ Supported statuses: `AVAILABLE`, `ALLOCATED`, `RESERVED`, `UNDER_MAINTENANCE`, `
 
 ## 7. Recommended Technology Stack
 
-- **Core Platform**: Java 25 LTS, Spring Boot 4.1.x, Spring Framework 7.0.x, PostgreSQL, Flyway, Spring Security, Spring Data JPA, Spring Modulith, Bean Validation, MapStruct, springdoc-openapi, Jackson, Lombok (boilerplate only).
+- **Core Platform**: Java 21 LTS, Spring Boot 3.4.2, Spring Framework 6.2.2, PostgreSQL, Flyway, Spring Security, Spring Data JPA, Spring Modulith, Bean Validation, MapStruct, springdoc-openapi, Jackson, Lombok (boilerplate only).
 - **Reporting & Storage**: Apache Commons CSV, Apache PDFBox, MinIO (local) / S3 (prod), Mailpit (local) / Transactional Email (prod).
 - **Testing**: JUnit 5, Mockito, AssertJ, Testcontainers, ArchUnit, Awaitility, REST Assured, WireMock, PIT (Mutation Testing).
 - **Infrastructure**: Docker Compose, ShedLock (distributed scheduling), Micrometer & Spring Boot Actuator.
