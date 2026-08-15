@@ -103,10 +103,12 @@ AssetFlow solves critical enterprise challenges:
 - Tax write-off scheduling
 - Cost tracking and reporting
 
-✅ **Comprehensive Reporting**
+✅ **Comprehensive Reporting & Data Import**
 - Operational analytics and utilization metrics
 - PDF and CSV export capabilities
 - Query-based report generation
+- Staging engine and REST API for high-throughput bulk asset CSV data imports (`/api/v1/import-batches`)
+
 
 ---
 
