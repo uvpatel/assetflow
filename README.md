@@ -235,23 +235,22 @@ Verify services are healthy:
 docker compose ps
 ```
 
-### Using Neon Postgres
+### Database Configuration (Neon Serverless PostgreSQL)
 
-Copy the example configuration and set `JDBC_DATABASE_URL` to the JDBC URL supplied by Neon. Do not commit `.env`; it is loaded locally by Spring Boot and ignored by Git.
+Copy the example environment configuration `.env.example` to `.env` and set your Neon PostgreSQL connection parameters (`DATABASE_URL`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`). Do not commit `.env`; it is loaded locally by Spring Boot and ignored by Git.
 
 ```bash
 cp .env.example .env
-# Set JDBC_DATABASE_URL=jdbc:postgresql://...?... in .env
+# Set DATABASE_URL, DATABASE_USERNAME, and DATABASE_PASSWORD in .env
 ```
 
-Local Docker settings remain the default when `JDBC_DATABASE_URL` is unset.
+The application connects exclusively to Neon PostgreSQL.
 
-Services now running:
-- **PostgreSQL**: `jdbc:postgresql://localhost:5432/assetflow`
-  - User: `assetflow` | Password: `assetflow`
+Services running via Docker:
 - **MinIO (S3)**: `http://localhost:9000` (API) | `http://localhost:9001` (Console)
   - User: `minioadmin` | Password: `minioadmin`
 - **Mailpit (SMTP)**: `localhost:1025` (SMTP) | `http://localhost:8025` (Web UI)
+
 
 ### 4. Build and Run Application
 
@@ -654,21 +653,19 @@ src/main/resources/db/migration/
 - **Indexes**: Strategic indexes on frequently queried columns
 - **Audit columns**: `created_at`, `updated_at`, `created_by_user_id`
 
-### Connection Details (Development)
+### Connection Details (Neon PostgreSQL)
 
 ```
-Host:     localhost
-Port:     5432
-Database: assetflow
-User:     assetflow
-Password: assetflow
+DATABASE_URL=jdbc:postgresql://<neon-host>/<database>?sslmode=require
+DATABASE_USERNAME=<neon-username>
+DATABASE_PASSWORD=<neon-password>
 ```
 
 ### Accessing Database
 
 ```bash
-# Connect via psql
-psql -h localhost -U assetflow -d assetflow
+# Connect via psql to Neon PostgreSQL
+psql "sslmode=require host=<neon-host> dbname=<database> user=<neon-username>"
 
 # Common queries
 \dt                          # List all tables
@@ -694,11 +691,10 @@ AssetFlow is configured via environment variables (12-factor app):
 
 ```bash
 # Database
-export DB_HOST=localhost
-export DB_PORT=5432
-export DB_NAME=assetflow
-export DB_USER=assetflow
-export DB_PASSWORD=assetflow
+export DATABASE_URL=jdbc:postgresql://<neon-host>/<database>?sslmode=require
+export DATABASE_USERNAME=<neon-username>
+export DATABASE_PASSWORD=<neon-password>
+
 
 # Server
 export PORT=8080

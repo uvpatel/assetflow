@@ -1,4 +1,6 @@
 target/
+.env
+!.env.example
 !.gitkeep
 *.log
 .DS_Store

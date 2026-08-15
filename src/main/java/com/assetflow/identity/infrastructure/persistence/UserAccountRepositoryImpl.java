@@ -2,11 +2,13 @@ package com.assetflow.identity.infrastructure.persistence;
 
 import com.assetflow.identity.domain.UserAccount;
 import com.assetflow.identity.domain.UserAccountRepository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Primary
 @Repository
 public class UserAccountRepositoryImpl implements UserAccountRepository {
 

@@ -16,6 +16,8 @@
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/application/RefreshTokenUseCaseTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/application/SignupUseCaseTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/infrastructure/security/JwtTokenProviderTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/infrastructure/security/SecurityFilterUnitTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/identity/infrastructure/security/SecurityIntegrationTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/maintenance/domain/AssetMaintenanceScheduleTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/maintenance/domain/MaintenancePartItemTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/maintenance/domain/MaintenanceSlaPolicyTest.java
