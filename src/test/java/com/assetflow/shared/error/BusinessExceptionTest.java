@@ -2,8 +2,6 @@ package com.assetflow.shared.error;
 
 import org.junit.jupiter.api.Test;
 
-import java.net.URI;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -5,7 +5,6 @@ import com.assetflow.identity.api.dto.LoginRequest;
 import com.assetflow.identity.api.dto.RefreshTokenRequest;
 import com.assetflow.identity.api.dto.SignupRequest;
 import com.assetflow.identity.api.dto.TokenRefreshResponse;
-import com.assetflow.identity.api.dto.UserSummaryDto;
 import com.assetflow.identity.application.LoginUseCase;
 import com.assetflow.identity.application.LogoutUseCase;
 import com.assetflow.identity.application.RefreshTokenUseCase;

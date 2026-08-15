@@ -1,6 +1,6 @@
 package com.assetflow.shared.security;
 
-import jakarta.servlet.FilterChain;
+
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 class TenantContextFilterTest {
 
@@ -35,8 +33,7 @@ class TenantContextFilterTest {
         request.addHeader(TenantContextFilter.TENANT_HEADER, tenantId.toString());
 
         MockHttpServletResponse response = new MockHttpServletResponse();
-        FilterChain filterChain = mock(FilterChain.class);
-
+       
         filter.doFilterInternal(request, response, (req, res) -> {
             assertThat(TenantContext.getOrganizationId()).isEqualTo(tenantId);
         });

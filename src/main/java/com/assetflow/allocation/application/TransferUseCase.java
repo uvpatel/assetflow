@@ -3,7 +3,6 @@ package com.assetflow.allocation.application;
 import com.assetflow.allocation.api.dto.CreateTransferRequest;
 import com.assetflow.allocation.domain.TransferRequest;
 import com.assetflow.allocation.domain.TransferRequestRepository;
-import com.assetflow.organization.domain.Department;
 import com.assetflow.organization.domain.DepartmentRepository;
 import com.assetflow.organization.domain.Employee;
 import com.assetflow.organization.domain.EmployeeRepository;
@@ -38,8 +37,9 @@ public class TransferUseCase {
         Employee employee = employeeRepository.findById(request.getEmployeeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Employee", request.getEmployeeId()));
 
-        Department toDepartment = departmentRepository.findById(request.getToDepartmentId())
-                .orElseThrow(() -> new ResourceNotFoundException("Department", request.getToDepartmentId()));
+        if (departmentRepository.findById(request.getToDepartmentId()).isEmpty()) {
+            throw new ResourceNotFoundException("Department", request.getToDepartmentId());
+        }
 
         TransferRequest transferRequest = new TransferRequest(
                 organizationId,
