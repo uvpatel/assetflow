@@ -29,8 +29,9 @@ public class MaintenanceUseCase {
     public MaintenanceRequest requestMaintenance(CreateMaintenanceRequestDto requestDto) {
         UUID organizationId = TenantContext.requireOrganizationId();
 
-        Asset asset = assetRepository.findById(requestDto.getAssetId())
-                .orElseThrow(() -> new ResourceNotFoundException("Asset", requestDto.getAssetId()));
+        if (assetRepository.findById(requestDto.getAssetId()).isEmpty()) {
+            throw new ResourceNotFoundException("Asset", requestDto.getAssetId());
+        }
 
         MaintenanceRequest request = new MaintenanceRequest(
                 organizationId,

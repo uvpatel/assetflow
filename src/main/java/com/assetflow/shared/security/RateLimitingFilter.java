@@ -1,6 +1,6 @@
 package com.assetflow.shared.security;
 
-import com.assetflow.shared.error.DomainViolationException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

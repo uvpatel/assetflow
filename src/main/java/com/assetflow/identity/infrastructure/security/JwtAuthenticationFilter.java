@@ -2,7 +2,6 @@ package com.assetflow.identity.infrastructure.security;
 
 import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.shared.security.TenantAuthenticationDetails;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

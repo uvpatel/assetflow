@@ -62,15 +62,15 @@ public class CustomFieldUseCase {
     public List<AssetCustomFieldValue> setCustomFieldValues(UUID assetId, List<SetAssetCustomFieldValueRequest> requests) {
         UUID organizationId = TenantContext.requireOrganizationId();
 
-        Asset asset = assetRepository.findById(assetId)
-                .filter(a -> a.getOrganizationId().equals(organizationId))
-                .orElseThrow(() -> new ResourceNotFoundException("Asset", assetId));
+        if (assetRepository.findById(assetId).isEmpty()) {
+            throw new ResourceNotFoundException("Asset", assetId);
+        }
 
         List<AssetCustomFieldValue> result = new ArrayList<>();
         for (SetAssetCustomFieldValueRequest req : requests) {
-            CategoryFieldDefinition fieldDef = fieldDefinitionRepository.findById(req.getFieldDefinitionId())
-                    .filter(fd -> fd.getOrganizationId().equals(organizationId))
-                    .orElseThrow(() -> new ResourceNotFoundException("CategoryFieldDefinition", req.getFieldDefinitionId()));
+            if (!fieldDefinitionRepository.findById(req.getFieldDefinitionId()).isPresent()) {
+                throw new ResourceNotFoundException("CategoryFieldDefinition", req.getFieldDefinitionId());
+            }
 
             Optional<AssetCustomFieldValue> existing = fieldValueRepository.findByAssetIdAndFieldDefinitionId(assetId, req.getFieldDefinitionId());
             AssetCustomFieldValue val;
