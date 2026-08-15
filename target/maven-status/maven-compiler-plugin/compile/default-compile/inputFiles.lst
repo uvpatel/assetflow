@@ -312,6 +312,7 @@
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/infrastructure/persistence/SpringDataVendorPerformanceEvaluationRepository.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/infrastructure/persistence/VendorContractJpaEntity.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/infrastructure/persistence/VendorPerformanceEvaluationJpaEntity.java
+/Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/logging/CorrelationIdFilter.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/persistence/BaseEntity.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/security/RateLimitingFilter.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/security/TenantAuthenticationDetails.java

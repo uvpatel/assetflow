@@ -34,7 +34,9 @@
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/domain/VendorPerformanceEvaluationTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/error/BusinessExceptionTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/error/GlobalExceptionHandlerTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/logging/CorrelationIdFilterTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/persistence/BaseEntityTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/security/RateLimitingFilterTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/security/TenantContextFilterTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/security/TenantContextTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/webhook/domain/ApiKeyTest.java

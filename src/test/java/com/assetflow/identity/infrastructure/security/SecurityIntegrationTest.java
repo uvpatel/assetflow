@@ -29,10 +29,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.assetflow.shared.logging.CorrelationIdFilter;
 import com.assetflow.shared.security.RateLimitingFilter;
 
 @WebMvcTest(controllers = {AuthController.class, BulkImportBatchController.class})
-@Import({SecurityConfig.class, JwtAuthenticationFilter.class, TenantContextFilter.class, RateLimitingFilter.class})
+@Import({SecurityConfig.class, JwtAuthenticationFilter.class, TenantContextFilter.class, RateLimitingFilter.class, CorrelationIdFilter.class})
 class SecurityIntegrationTest {
 
     @Autowired

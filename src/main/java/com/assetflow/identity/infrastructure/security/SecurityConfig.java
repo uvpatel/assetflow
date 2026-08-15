@@ -1,5 +1,6 @@
 package com.assetflow.identity.infrastructure.security;
 
+import com.assetflow.shared.logging.CorrelationIdFilter;
 import com.assetflow.shared.security.RateLimitingFilter;
 import com.assetflow.shared.security.TenantContextFilter;
 import org.springframework.context.annotation.Bean;
@@ -22,13 +23,16 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final TenantContextFilter tenantContextFilter;
     private final RateLimitingFilter rateLimitingFilter;
+    private final CorrelationIdFilter correlationIdFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           TenantContextFilter tenantContextFilter,
-                          RateLimitingFilter rateLimitingFilter) {
+                          RateLimitingFilter rateLimitingFilter,
+                          CorrelationIdFilter correlationIdFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.tenantContextFilter = tenantContextFilter;
         this.rateLimitingFilter = rateLimitingFilter;
+        this.correlationIdFilter = correlationIdFilter;
     }
 
     @Bean
@@ -54,6 +58,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(correlationIdFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(tenantContextFilter, UsernamePasswordAuthenticationFilter.class);

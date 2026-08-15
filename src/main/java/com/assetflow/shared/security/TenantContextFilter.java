@@ -14,11 +14,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.slf4j.MDC;
+
 @Component
 public class TenantContextFilter extends OncePerRequestFilter {
 
     private static final Logger log = LoggerFactory.getLogger(TenantContextFilter.class);
     public static final String TENANT_HEADER = "X-Organization-ID";
+    public static final String MDC_TENANT_ID_KEY = "tenantId";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -27,10 +30,12 @@ public class TenantContextFilter extends OncePerRequestFilter {
             UUID tenantId = resolveTenantId(request);
             if (tenantId != null) {
                 TenantContext.setOrganizationId(tenantId);
+                MDC.put(MDC_TENANT_ID_KEY, tenantId.toString());
             }
             filterChain.doFilter(request, response);
         } finally {
             TenantContext.clear();
+            MDC.remove(MDC_TENANT_ID_KEY);
         }
     }
 
