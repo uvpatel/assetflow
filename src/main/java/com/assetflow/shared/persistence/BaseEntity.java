@@ -36,6 +36,21 @@ public abstract class BaseEntity {
     @Column(name = "version", nullable = false)
     private Long version;
 
+    @jakarta.persistence.PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
+        if (updatedAt == null) {
+            updatedAt = Instant.now();
+        }
+    }
+
+    @jakarta.persistence.PreUpdate
+    protected void onUpdate() {
+        updatedAt = Instant.now();
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -76,3 +91,4 @@ public abstract class BaseEntity {
         this.version = version;
     }
 }
+

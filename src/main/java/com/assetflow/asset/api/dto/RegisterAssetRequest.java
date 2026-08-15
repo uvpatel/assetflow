@@ -1,11 +1,12 @@
 package com.assetflow.asset.api.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class RegisterAssetRequest {
 
-    @NotBlank(message = "Category ID is required")
+    @NotNull(message = "Category ID is required")
     private UUID categoryId;
 
     @NotBlank(message = "Asset tag is required")

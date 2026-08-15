@@ -7,6 +7,8 @@ import com.assetflow.identity.domain.UserAccount;
 import com.assetflow.identity.domain.UserAccountRepository;
 import com.assetflow.identity.domain.UserRole;
 import com.assetflow.shared.error.DomainViolationException;
+import com.assetflow.identity.application.port.TokenProviderPort;
+import com.assetflow.identity.infrastructure.security.JwtProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +21,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,11 +34,18 @@ class SignupUseCaseTest {
     @Mock
     private PasswordEncoderPort passwordEncoder;
 
+    @Mock
+    private TokenProviderPort tokenProvider;
+
+    @Mock
+    private JwtProperties jwtProperties;
+
     private SignupUseCase signupUseCase;
 
     @BeforeEach
     void setUp() {
-        signupUseCase = new SignupUseCase(userRepository, passwordEncoder);
+        lenient().when(jwtProperties.getAccessTokenExpirationSeconds()).thenReturn(3600L);
+        signupUseCase = new SignupUseCase(userRepository, passwordEncoder, tokenProvider, jwtProperties);
     }
 
     @Test

@@ -5,6 +5,7 @@ com/assetflow/asset/domain/ConsumableAssetRepository.class
 com/assetflow/reporting/application/BulkImportBatchUseCase.class
 com/assetflow/allocation/domain/TemporaryAssetCheckoutRepository.class
 com/assetflow/asset/domain/ConsumableBatch.class
+com/assetflow/shared/config/JpaAuditingConfig.class
 com/assetflow/booking/domain/ResourceBooking.class
 com/assetflow/allocation/infrastructure/persistence/SpringDataTemporaryAssetCheckoutRepository.class
 com/assetflow/organization/domain/DepartmentHierarchyRepository.class
@@ -74,6 +75,7 @@ com/assetflow/asset/infrastructure/persistence/SpringDataAssetDepreciationSchedu
 com/assetflow/audit/domain/AuditDiscrepancyResolutionRepository.class
 com/assetflow/allocation/infrastructure/persistence/TemporaryAssetCheckoutJpaEntity.class
 com/assetflow/maintenance/api/MaintenancePartsController$AddPartRequest.class
+com/assetflow/asset/api/AssetCategoryController$CreateCategoryRequest.class
 com/assetflow/financial/api/AssetTaxWriteOffController$WriteOffResponse.class
 com/assetflow/identity/infrastructure/persistence/RefreshTokenRepositoryImpl.class
 com/assetflow/maintenance/infrastructure/persistence/MaintenanceSlaPolicyJpaEntity.class
@@ -182,6 +184,7 @@ com/assetflow/identity/infrastructure/persistence/RefreshTokenEntity.class
 com/assetflow/shared/api/VendorPerformanceEvaluationController$RecordEvaluationRequest.class
 com/assetflow/maintenance/api/MaintenancePartsController.class
 com/assetflow/identity/api/dto/AuthResponse.class
+com/assetflow/asset/api/AssetCategoryController.class
 com/assetflow/shared/api/VendorContractController$RenewContractRequest.class
 com/assetflow/asset/domain/AssetStatus.class
 com/assetflow/shared/infrastructure/persistence/JpaPurchaseOrderRepositoryAdapter.class
@@ -252,6 +255,7 @@ com/assetflow/asset/api/dto/SetAssetCustomFieldValueRequest.class
 com/assetflow/reporting/infrastructure/persistence/SpringDataSavedSearchPresetRepository.class
 com/assetflow/shared/application/PurchaseOrderUseCase.class
 com/assetflow/asset/domain/AssetBundleItemRepository.class
+com/assetflow/asset/application/AssetCategoryUseCase.class
 com/assetflow/asset/infrastructure/JpaAssetCustomFieldValueRepositoryAdapter.class
 com/assetflow/shared/api/VendorPerformanceEvaluationController.class
 com/assetflow/financial/domain/AssetTaxWriteOff.class

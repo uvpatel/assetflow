@@ -272,11 +272,11 @@ Or run tests:
 
 | Service | URL |
 |---------|-----|
-| **API Base** | `http://localhost:8080/api/v1` |
-| **OpenAPI Spec** | `http://localhost:8080/api-docs` |
-| **Swagger UI** | `http://localhost:8080/swagger-ui.html` |
-| **Health Check** | `http://localhost:8080/actuator/health` |
-| **Metrics** | `http://localhost:8080/actuator/metrics` |
+| **API Base** | `http://localhost:5000/api/v1` |
+| **OpenAPI Spec** | `http://localhost:5000/api-docs` |
+| **Swagger UI** | `http://localhost:5000/swagger-ui.html` |
+| **Health Check** | `http://localhost:5000/actuator/health` |
+| **Metrics** | `http://localhost:5000/actuator/metrics` |
 | **MinIO Console** | `http://localhost:9001` |
 | **Mailpit Web UI** | `http://localhost:8025` |
 
@@ -565,7 +565,7 @@ class AllocationActiveUniquenessTest {
 ### Base URL
 
 ```
-http://localhost:8080/api/v1
+http://localhost:5000/api/v1
 ```
 
 ### Authentication
@@ -574,7 +574,7 @@ AssetFlow uses JWT (Bearer Token) authentication:
 
 ```bash
 # 1. Signup
-curl -X POST http://localhost:8080/api/v1/auth/signup \
+curl -X POST http://localhost:5000/api/v1/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
@@ -582,7 +582,7 @@ curl -X POST http://localhost:8080/api/v1/auth/signup \
   }'
 
 # 2. Login to get token
-curl -X POST http://localhost:8080/api/v1/auth/login \
+curl -X POST http://localhost:5000/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "user@example.com",
@@ -591,14 +591,14 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
 # Returns: { "accessToken": "...", "refreshToken": "..." }
 
 # 3. Use token in requests
-curl -X GET http://localhost:8080/api/v1/assets \
+curl -X GET http://localhost:5000/api/v1/assets \
   -H "Authorization: Bearer <accessToken>"
 ```
 
 ### API Documentation Tools
 
-- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
-- **OpenAPI JSON**: `http://localhost:8080/api-docs`
+- **Swagger UI**: `http://localhost:5000/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:5000/api-docs`
 - **Detailed API Specs**: See [PLAN.md](PLAN.md) for endpoint reference
 
 ### Common Endpoints
@@ -678,7 +678,7 @@ SELECT * FROM activity_log;  # Audit trail
 
 ```bash
 # Via Spring Boot Actuator
-curl http://localhost:8080/actuator/health/db
+curl http://localhost:5000/actuator/health/db
 ```
 
 ---
@@ -697,7 +697,7 @@ export DATABASE_PASSWORD=<neon-password>
 
 
 # Server
-export PORT=8080
+export PORT=5000
 export ENVIRONMENT=development
 
 # Security
@@ -811,8 +811,8 @@ docker compose logs postgres
 #### 2. Port Already in Use
 
 ```bash
-# Find process using port 8080
-lsof -i :8080
+# Find process using port 5000
+lsof -i :5000
 
 # Kill the process
 kill -9 <PID>
@@ -898,7 +898,7 @@ mvn test -Dtest=AllocationTest#shouldPreventDoubleAllocation -DdebuggerPort=5005
   - [003: Concurrency & Invariants](docs/adr/003-concurrency-and-invariants.md)
 - **[Security Policy](SECURITY.md)** — Security considerations and best practices
 - **[Contributing Guidelines](CONTRIBUTING.md)** — How to contribute
-- **[Swagger UI](http://localhost:8080/swagger-ui.html)** — Interactive API documentation
+- **[Swagger UI](http://localhost:5000/swagger-ui.html)** — Interactive API documentation
 - **[Spring Boot Docs](https://spring.io/projects/spring-boot)** — Official Spring Boot documentation
 - **[PostgreSQL Docs](https://www.postgresql.org/docs/)** — Database reference
 

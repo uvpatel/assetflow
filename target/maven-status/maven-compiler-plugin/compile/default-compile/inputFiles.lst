@@ -29,6 +29,7 @@
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/allocation/infrastructure/persistence/TemporaryAssetCheckoutJpaEntity.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/api/AssetBarcodeController.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/api/AssetBundleController.java
+/Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/api/AssetCategoryController.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/api/AssetConditionAssessmentController.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/api/AssetController.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/api/AssetDepreciationController.java
@@ -46,6 +47,7 @@
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/api/dto/SetAssetCustomFieldValueRequest.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/application/AssetBarcodeUseCase.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/application/AssetBundleUseCase.java
+/Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/application/AssetCategoryUseCase.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/application/AssetConditionAssessmentUseCase.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/application/AssetDepreciationUseCase.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/application/AssetDocumentUseCase.java
@@ -88,6 +90,7 @@
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/infrastructure/JpaAssetCategoryRepositoryAdapter.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/infrastructure/JpaAssetCustomFieldValueRepositoryAdapter.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/infrastructure/JpaAssetDocumentRepositoryAdapter.java
+/Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/infrastructure/JpaAssetRepositoryAdapter.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/infrastructure/JpaCategoryFieldDefinitionRepositoryAdapter.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/infrastructure/persistence/AssetBundleItemJpaEntity.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/asset/infrastructure/persistence/AssetConditionAssessmentJpaEntity.java
@@ -272,6 +275,7 @@
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/application/PurchaseOrderUseCase.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/application/VendorContractUseCase.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/application/VendorPerformanceEvaluationUseCase.java
+/Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/config/JpaAuditingConfig.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/config/NeonDataSourceConfig.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/config/ShedLockConfig.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/domain/DataRetentionPolicy.java
