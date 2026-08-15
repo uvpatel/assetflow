@@ -44,6 +44,12 @@ public class MaintenanceRequest extends BaseEntity {
     @Column(name = "resolved_at")
     private Instant resolvedAt;
 
+    @Column(name = "target_resolution_at")
+    private Instant targetResolutionAt;
+
+    @Column(name = "sla_status", nullable = false)
+    private String slaStatus = "IN_SLA";
+
     public MaintenanceRequest() {
     }
 
@@ -154,5 +160,27 @@ public class MaintenanceRequest extends BaseEntity {
 
     public void setResolvedAt(Instant resolvedAt) {
         this.resolvedAt = resolvedAt;
+    }
+
+    public Instant getTargetResolutionAt() {
+        return targetResolutionAt;
+    }
+
+    public void setTargetResolutionAt(Instant targetResolutionAt) {
+        this.targetResolutionAt = targetResolutionAt;
+    }
+
+    public String getSlaStatus() {
+        return slaStatus;
+    }
+
+    public void setSlaStatus(String slaStatus) {
+        this.slaStatus = slaStatus;
+    }
+
+    public void checkSlaBreach(Instant now) {
+        if (!"RESOLVED".equals(this.status) && targetResolutionAt != null && now.isAfter(targetResolutionAt)) {
+            this.slaStatus = "VIOLATED";
+        }
     }
 }
