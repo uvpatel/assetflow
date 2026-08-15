@@ -121,6 +121,7 @@ public class DataSeeder implements CommandLineRunner {
 
     private Map<String, Department> seedDepartments(UUID orgId) {
         Map<String, Department> result = new LinkedHashMap<>();
+        List<Department> existing = departmentRepo.findByOrganizationId(orgId);
         String[][] deptData = {
                 {"Executive Leadership", "EXEC"},
                 {"Engineering & Software", "ENG"},
@@ -130,15 +131,18 @@ public class DataSeeder implements CommandLineRunner {
         };
 
         for (String[] data : deptData) {
-            Department dept = new Department(orgId, data[0], data[1], null);
-            Department saved = departmentRepo.save(dept);
-            result.put(data[1], saved);
+            Department dept = existing.stream()
+                    .filter(d -> data[1].equals(d.getCode()))
+                    .findFirst()
+                    .orElseGet(() -> departmentRepo.save(new Department(orgId, data[0], data[1], null)));
+            result.put(data[1], dept);
         }
         return result;
     }
 
     private Map<String, AssetCategory> seedCategories(UUID orgId) {
         Map<String, AssetCategory> result = new LinkedHashMap<>();
+        List<AssetCategory> existing = categoryRepo.findByOrganizationId(orgId);
         String[][] catData = {
                 {"Laptops & Workstations", "LAPTOP", "High performance laptops and desktop PCs"},
                 {"Servers & Cloud Hardware", "SERVER", "Rack servers, SAN storage, and switches"},
@@ -151,9 +155,11 @@ public class DataSeeder implements CommandLineRunner {
         };
 
         for (String[] data : catData) {
-            AssetCategory cat = new AssetCategory(orgId, data[0], data[1], data[2]);
-            AssetCategory saved = categoryRepo.save(cat);
-            result.put(data[1], saved);
+            AssetCategory cat = existing.stream()
+                    .filter(c -> data[1].equals(c.getCode()))
+                    .findFirst()
+                    .orElseGet(() -> categoryRepo.save(new AssetCategory(orgId, data[0], data[1], data[2])));
+            result.put(data[1], cat);
         }
         return result;
     }

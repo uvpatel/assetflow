@@ -124,4 +124,14 @@ class DataSeederTest {
         verify(categoryRepo, times(8)).save(any());
         verify(assetRepo, times(50)).save(any());
     }
+
+    @Test
+    @DisplayName("Should maintain entity state and skip creation on subsequent seeder runs")
+    void testIdempotentRepeatedRun() {
+        when(userAccountRepo.existsByEmail("admin@assetflow.example")).thenReturn(true);
+        dataSeeder.run();
+
+        verify(userAccountRepo, never()).save(any(UserAccount.class));
+        verify(organizationRepo, never()).save(any());
+    }
 }

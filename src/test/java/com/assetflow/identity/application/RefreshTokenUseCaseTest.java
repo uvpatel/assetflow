@@ -116,4 +116,22 @@ class RefreshTokenUseCaseTest {
                 .isInstanceOf(DomainViolationException.class)
                 .hasMessageContaining("Refresh token is invalid");
     }
+
+    @Test
+    void shouldRejectInactiveUserAccountOnRefreshToken() {
+        String rawToken = "valid-token-inactive-user";
+        String tokenHash = LoginUseCase.hashToken(rawToken);
+        UUID userId = UUID.randomUUID();
+        UUID orgId = UUID.randomUUID();
+
+        RefreshToken existingToken = RefreshToken.create(userId, tokenHash, Instant.now().plusSeconds(3600));
+        UserAccount inactiveUser = new UserAccount(userId, "inactive@example.com", "hash", orgId, UserStatus.SUSPENDED, UserRole.EMPLOYEE, Instant.now(), Instant.now());
+
+        when(refreshTokenRepository.findByTokenHash(tokenHash)).thenReturn(Optional.of(existingToken));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(inactiveUser));
+
+        assertThatThrownBy(() -> refreshTokenUseCase.execute(new RefreshTokenRequest(rawToken)))
+                .isInstanceOf(DomainViolationException.class)
+                .hasMessageContaining("User account is not active");
+    }
 }
