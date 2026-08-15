@@ -1,5 +1,6 @@
 package com.assetflow.organization.api;
 
+import com.assetflow.organization.api.dto.DepartmentTreeNodeDto;
 import com.assetflow.organization.application.DepartmentHierarchyUseCase;
 import com.assetflow.organization.domain.DepartmentHierarchy;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,12 @@ public class DepartmentHierarchyController {
                 .map(this::toResponse)
                 .toList();
         return ResponseEntity.ok(hierarchy);
+    }
+
+    @GetMapping("/tree")
+    public ResponseEntity<List<DepartmentTreeNodeDto>> getTree(@PathVariable UUID organizationId) {
+        List<DepartmentTreeNodeDto> tree = useCase.getDepartmentTree(organizationId);
+        return ResponseEntity.ok(tree);
     }
 
     private DepartmentHierarchyResponse toResponse(DepartmentHierarchy h) {
