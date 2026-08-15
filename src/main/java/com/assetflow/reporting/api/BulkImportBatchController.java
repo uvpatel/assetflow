@@ -22,52 +22,45 @@ public class BulkImportBatchController {
     }
 
     public record CreateBatchRequest(String filename, int totalRecords) {}
-    public record UpdateProgressRequest(int processed, int failed) {}
-    public record MarkFailedRequest(String errorMessage) {}
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<BulkImportBatch> createBatch(@RequestBody CreateBatchRequest request) {
-        UUID tenantId = TenantContext.getTenantId();
-        UUID userId = TenantContext.getUserId();
-        BulkImportBatch batch = bulkImportBatchUseCase.createBatch(tenantId, userId, request.filename(), request.totalRecords());
+        UUID organizationId = TenantContext.requireOrganizationId();
+        BulkImportBatch batch = bulkImportBatchUseCase.createBatch(organizationId, request.filename(), request.totalRecords());
         return ResponseEntity.status(HttpStatus.CREATED).body(batch);
     }
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'AUDITOR')")
     public ResponseEntity<List<BulkImportBatch>> listBatches() {
-        UUID tenantId = TenantContext.getTenantId();
-        return ResponseEntity.ok(bulkImportBatchUseCase.listBatches(tenantId));
+        UUID organizationId = TenantContext.requireOrganizationId();
+        return ResponseEntity.ok(bulkImportBatchUseCase.listBatches(organizationId));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'AUDITOR')")
     public ResponseEntity<BulkImportBatch> getBatch(@PathVariable UUID id) {
-        UUID tenantId = TenantContext.getTenantId();
-        return bulkImportBatchUseCase.getBatchById(tenantId, id)
+        return bulkImportBatchUseCase.getBatchById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{id}/progress")
+    @PostMapping("/{id}/start")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ResponseEntity<BulkImportBatch> updateProgress(@PathVariable UUID id, @RequestBody UpdateProgressRequest request) {
-        UUID tenantId = TenantContext.getTenantId();
-        return ResponseEntity.ok(bulkImportBatchUseCase.updateProgress(tenantId, id, request.processed(), request.failed()));
+    public ResponseEntity<BulkImportBatch> startProcessing(@PathVariable UUID id) {
+        return ResponseEntity.ok(bulkImportBatchUseCase.startProcessing(id));
     }
 
-    @PostMapping("/{id}/complete")
+    @PostMapping("/{id}/success")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ResponseEntity<BulkImportBatch> markCompleted(@PathVariable UUID id) {
-        UUID tenantId = TenantContext.getTenantId();
-        return ResponseEntity.ok(bulkImportBatchUseCase.markCompleted(tenantId, id));
+    public ResponseEntity<BulkImportBatch> recordSuccess(@PathVariable UUID id) {
+        return ResponseEntity.ok(bulkImportBatchUseCase.recordSuccess(id));
     }
 
-    @PostMapping("/{id}/fail")
+    @PostMapping("/{id}/failure")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public ResponseEntity<BulkImportBatch> markFailed(@PathVariable UUID id, @RequestBody MarkFailedRequest request) {
-        UUID tenantId = TenantContext.getTenantId();
-        return ResponseEntity.ok(bulkImportBatchUseCase.markFailed(tenantId, id, request.errorMessage()));
+    public ResponseEntity<BulkImportBatch> recordFailure(@PathVariable UUID id) {
+        return ResponseEntity.ok(bulkImportBatchUseCase.recordFailure(id));
     }
 }

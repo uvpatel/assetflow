@@ -19,39 +19,39 @@ public class BulkImportBatchUseCase {
         this.batchRepository = batchRepository;
     }
 
-    public BulkImportBatch createBatch(UUID tenantId, UUID initiatedBy, String filename, int totalRecords) {
-        BulkImportBatch batch = new BulkImportBatch(tenantId, initiatedBy, filename, totalRecords);
+    public BulkImportBatch createBatch(UUID organizationId, String filename, int totalRecords) {
+        BulkImportBatch batch = BulkImportBatch.create(organizationId, filename, totalRecords);
         return batchRepository.save(batch);
     }
 
     @Transactional(readOnly = true)
-    public Optional<BulkImportBatch> getBatchById(UUID tenantId, UUID batchId) {
-        return batchRepository.findByIdAndTenantId(batchId, tenantId);
+    public Optional<BulkImportBatch> getBatchById(UUID batchId) {
+        return batchRepository.findById(batchId);
     }
 
     @Transactional(readOnly = true)
-    public List<BulkImportBatch> listBatches(UUID tenantId) {
-        return batchRepository.findAllByTenantId(tenantId);
+    public List<BulkImportBatch> listBatches(UUID organizationId) {
+        return batchRepository.findByOrganizationId(organizationId);
     }
 
-    public BulkImportBatch updateProgress(UUID tenantId, UUID batchId, int processed, int failed) {
-        BulkImportBatch batch = batchRepository.findByIdAndTenantId(batchId, tenantId)
+    public BulkImportBatch startProcessing(UUID batchId) {
+        BulkImportBatch batch = batchRepository.findById(batchId)
                 .orElseThrow(() -> new IllegalArgumentException("Import batch not found: " + batchId));
-        batch.updateProgress(processed, failed);
+        batch.startProcessing();
         return batchRepository.save(batch);
     }
 
-    public BulkImportBatch markCompleted(UUID tenantId, UUID batchId) {
-        BulkImportBatch batch = batchRepository.findByIdAndTenantId(batchId, tenantId)
+    public BulkImportBatch recordSuccess(UUID batchId) {
+        BulkImportBatch batch = batchRepository.findById(batchId)
                 .orElseThrow(() -> new IllegalArgumentException("Import batch not found: " + batchId));
-        batch.markCompleted();
+        batch.recordSuccess();
         return batchRepository.save(batch);
     }
 
-    public BulkImportBatch markFailed(UUID tenantId, UUID batchId, String errorMessage) {
-        BulkImportBatch batch = batchRepository.findByIdAndTenantId(batchId, tenantId)
+    public BulkImportBatch recordFailure(UUID batchId) {
+        BulkImportBatch batch = batchRepository.findById(batchId)
                 .orElseThrow(() -> new IllegalArgumentException("Import batch not found: " + batchId));
-        batch.markFailed(errorMessage);
+        batch.recordFailure();
         return batchRepository.save(batch);
     }
 }
