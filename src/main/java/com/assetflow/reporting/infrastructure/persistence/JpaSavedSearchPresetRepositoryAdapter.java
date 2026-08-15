@@ -51,6 +51,7 @@ public class JpaSavedSearchPresetRepositoryAdapter implements SavedSearchPresetR
         entity.setTargetEntity(domain.getTargetEntity());
         entity.setFilterJson(domain.getFilterJson());
         entity.setShared(domain.isShared());
+        entity.setDefault(domain.isDefault());
         entity.setCreatedAt(domain.getCreatedAt());
         entity.setUpdatedAt(domain.getUpdatedAt());
         return entity;
@@ -65,6 +66,7 @@ public class JpaSavedSearchPresetRepositoryAdapter implements SavedSearchPresetR
                 entity.getTargetEntity(),
                 entity.getFilterJson(),
                 entity.isShared(),
+                entity.isDefault(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

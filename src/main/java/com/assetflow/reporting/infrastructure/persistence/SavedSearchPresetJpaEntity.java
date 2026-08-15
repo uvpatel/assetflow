@@ -33,6 +33,9 @@ public class SavedSearchPresetJpaEntity {
     @Column(name = "is_shared", nullable = false)
     private boolean isShared;
 
+    @Column(name = "is_default")
+    private boolean isDefault;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -61,6 +64,9 @@ public class SavedSearchPresetJpaEntity {
 
     public boolean isShared() { return isShared; }
     public void setShared(boolean shared) { isShared = shared; }
+
+    public boolean isDefault() { return isDefault; }
+    public void setDefault(boolean aDefault) { isDefault = aDefault; }
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }

@@ -11,6 +11,7 @@ public class SavedSearchPreset {
     private final String targetEntity;
     private String filterJson;
     private boolean isShared;
+    private boolean isDefault;
     private final Instant createdAt;
     private Instant updatedAt;
 
@@ -22,6 +23,7 @@ public class SavedSearchPreset {
             String targetEntity,
             String filterJson,
             boolean isShared,
+            boolean isDefault,
             Instant createdAt,
             Instant updatedAt) {
         if (name == null || name.isBlank()) {
@@ -37,8 +39,22 @@ public class SavedSearchPreset {
         this.targetEntity = targetEntity;
         this.filterJson = filterJson;
         this.isShared = isShared;
+        this.isDefault = isDefault;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public SavedSearchPreset(
+            UUID id,
+            UUID organizationId,
+            UUID userId,
+            String name,
+            String targetEntity,
+            String filterJson,
+            boolean isShared,
+            Instant createdAt,
+            Instant updatedAt) {
+        this(id, organizationId, userId, name, targetEntity, filterJson, isShared, false, createdAt, updatedAt);
     }
 
     public static SavedSearchPreset create(
@@ -57,6 +73,7 @@ public class SavedSearchPreset {
                 targetEntity,
                 filterJson,
                 isShared,
+                false,
                 now,
                 now
         );
@@ -75,6 +92,16 @@ public class SavedSearchPreset {
         this.updatedAt = Instant.now();
     }
 
+    public void markDefault() {
+        this.isDefault = true;
+        this.updatedAt = Instant.now();
+    }
+
+    public void unmarkDefault() {
+        this.isDefault = false;
+        this.updatedAt = Instant.now();
+    }
+
     public UUID getId() { return id; }
     public UUID getOrganizationId() { return organizationId; }
     public UUID getUserId() { return userId; }
@@ -82,6 +109,7 @@ public class SavedSearchPreset {
     public String getTargetEntity() { return targetEntity; }
     public String getFilterJson() { return filterJson; }
     public boolean isShared() { return isShared; }
+    public boolean isDefault() { return isDefault; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 }
