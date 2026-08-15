@@ -36,4 +36,9 @@ public class JpaWebhookSubscriptionRepositoryAdapter implements WebhookSubscript
     public List<WebhookSubscription> findByOrganizationId(UUID organizationId) {
         return repository.findByOrganizationId(organizationId);
     }
+
+    @Override
+    public void deleteById(UUID id) {
+        repository.deleteById(id);
+    }
 }
