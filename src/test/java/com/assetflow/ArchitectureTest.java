@@ -18,9 +18,27 @@ public class ArchitectureTest {
                     .allowEmptyShould(true);
 
     @ArchTest
+    static final ArchRule domain_should_not_depend_on_spring_web =
+            noClasses().that().resideInAPackage("..domain..")
+                    .should().dependOnClassesThat().resideInAPackage("org.springframework.web..")
+                    .allowEmptyShould(true);
+
+    @ArchTest
     static final ArchRule controllers_should_be_suffixed_and_in_api_package =
             classes().that().haveSimpleNameEndingWith("Controller")
                     .should().resideInAPackage("..api..")
+                    .allowEmptyShould(true);
+
+    @ArchTest
+    static final ArchRule controllers_should_not_be_depended_on_by_domain_or_application =
+            noClasses().that().resideInAnyPackage("..domain..", "..application..")
+                    .should().dependOnClassesThat().haveSimpleNameEndingWith("Controller")
+                    .allowEmptyShould(true);
+
+    @ArchTest
+    static final ArchRule use_cases_should_reside_in_application_package =
+            classes().that().haveSimpleNameEndingWith("UseCase")
+                    .should().resideInAPackage("..application..")
                     .allowEmptyShould(true);
 
     @ArchTest
