@@ -25,8 +25,20 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     }
 
     @Override
+    public Optional<RefreshToken> findById(UUID id) {
+        return jpaRepository.findById(id).map(this::toDomain);
+    }
+
+    @Override
     public Optional<RefreshToken> findByTokenHash(String tokenHash) {
         return jpaRepository.findByTokenHash(tokenHash).map(this::toDomain);
+    }
+
+    @Override
+    public java.util.List<RefreshToken> findAllActiveByUserId(UUID userId) {
+        return jpaRepository.findByUserIdAndRevokedFalse(userId).stream()
+                .map(this::toDomain)
+                .toList();
     }
 
     @Override

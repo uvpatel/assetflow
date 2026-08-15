@@ -9,8 +9,11 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import java.util.List;
+
 public interface RefreshTokenJpaRepository extends JpaRepository<RefreshTokenEntity, UUID> {
     Optional<RefreshTokenEntity> findByTokenHash(String tokenHash);
+    List<RefreshTokenEntity> findByUserIdAndRevokedFalse(UUID userId);
 
     @Modifying
     @Query("UPDATE RefreshTokenEntity r SET r.revoked = true, r.revokedAt = :now WHERE r.userId = :userId AND r.revoked = false")
