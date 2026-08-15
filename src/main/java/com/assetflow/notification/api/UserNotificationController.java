@@ -5,10 +5,18 @@ import com.assetflow.notification.api.dto.UpdateNotificationPreferenceRequest;
 import com.assetflow.notification.application.UserNotificationUseCase;
 import com.assetflow.notification.domain.Notification;
 import com.assetflow.notification.domain.NotificationPreference;
+import com.assetflow.notification.domain.NotificationQueueMessage;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +31,13 @@ public class UserNotificationController {
         this.userNotificationUseCase = userNotificationUseCase;
     }
 
+    public record DispatchNotificationRequest(
+            UUID recipientUserId,
+            String eventType,
+            String subject,
+            String body
+    ) {}
+
     @PostMapping
     public ResponseEntity<Notification> createNotification(@Valid @RequestBody CreateNotificationRequest request) {
         Notification notification = userNotificationUseCase.createNotification(
@@ -32,6 +47,17 @@ public class UserNotificationController {
                 request.getType()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(notification);
+    }
+
+    @PostMapping("/dispatch")
+    public ResponseEntity<List<NotificationQueueMessage>> dispatchNotification(@RequestBody DispatchNotificationRequest request) {
+        List<NotificationQueueMessage> queued = userNotificationUseCase.dispatchMultiChannelNotification(
+                request.recipientUserId(),
+                request.eventType(),
+                request.subject(),
+                request.body()
+        );
+        return ResponseEntity.ok(queued);
     }
 
     @GetMapping("/user/{userId}")
@@ -63,7 +89,9 @@ public class UserNotificationController {
                 userId,
                 request.getNotificationType(),
                 request.isEmailEnabled(),
-                request.isInAppEnabled()
+                request.isInAppEnabled(),
+                request.isSmsEnabled(),
+                request.isSlackEnabled()
         );
         return ResponseEntity.ok(preference);
     }

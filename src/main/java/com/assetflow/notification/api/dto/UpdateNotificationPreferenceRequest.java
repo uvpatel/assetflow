@@ -11,13 +11,23 @@ public class UpdateNotificationPreferenceRequest {
 
     private boolean inAppEnabled = true;
 
+    private boolean smsEnabled = false;
+
+    private boolean slackEnabled = false;
+
     public UpdateNotificationPreferenceRequest() {
     }
 
-    public UpdateNotificationPreferenceRequest(String notificationType, boolean emailEnabled, boolean inAppEnabled) {
+    public UpdateNotificationPreferenceRequest(String notificationType, boolean emailEnabled, boolean inAppEnabled, boolean smsEnabled, boolean slackEnabled) {
         this.notificationType = notificationType;
         this.emailEnabled = emailEnabled;
         this.inAppEnabled = inAppEnabled;
+        this.smsEnabled = smsEnabled;
+        this.slackEnabled = slackEnabled;
+    }
+
+    public UpdateNotificationPreferenceRequest(String notificationType, boolean emailEnabled, boolean inAppEnabled) {
+        this(notificationType, emailEnabled, inAppEnabled, false, false);
     }
 
     public String getNotificationType() {
@@ -42,5 +52,21 @@ public class UpdateNotificationPreferenceRequest {
 
     public void setInAppEnabled(boolean inAppEnabled) {
         this.inAppEnabled = inAppEnabled;
+    }
+
+    public boolean isSmsEnabled() {
+        return smsEnabled;
+    }
+
+    public void setSmsEnabled(boolean smsEnabled) {
+        this.smsEnabled = smsEnabled;
+    }
+
+    public boolean isSlackEnabled() {
+        return slackEnabled;
+    }
+
+    public void setSlackEnabled(boolean slackEnabled) {
+        this.slackEnabled = slackEnabled;
     }
 }
