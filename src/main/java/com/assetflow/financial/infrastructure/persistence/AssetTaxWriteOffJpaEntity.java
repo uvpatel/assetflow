@@ -34,6 +34,15 @@ public class AssetTaxWriteOffJpaEntity {
     @Column(name = "writeoff_reason")
     private String writeoffReason;
 
+    @Column(name = "status")
+    private String status = "APPROVED";
+
+    @Column(name = "approved_by")
+    private UUID approvedBy;
+
+    @Column(name = "approved_at")
+    private Instant approvedAt;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -59,6 +68,15 @@ public class AssetTaxWriteOffJpaEntity {
 
     public String getWriteoffReason() { return writeoffReason; }
     public void setWriteoffReason(String writeoffReason) { this.writeoffReason = writeoffReason; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public UUID getApprovedBy() { return approvedBy; }
+    public void setApprovedBy(UUID approvedBy) { this.approvedBy = approvedBy; }
+
+    public Instant getApprovedAt() { return approvedAt; }
+    public void setApprovedAt(Instant approvedAt) { this.approvedAt = approvedAt; }
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }

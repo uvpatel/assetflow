@@ -3,7 +3,14 @@ package com.assetflow.financial.api;
 import com.assetflow.financial.application.AssetTaxWriteOffUseCase;
 import com.assetflow.financial.domain.AssetTaxWriteOff;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -11,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/organizations/{organizationId}/assets/{assetId}/tax-writeoffs")
+@RequestMapping("/api/v1/organizations/{organizationId}")
 public class AssetTaxWriteOffController {
 
     private final AssetTaxWriteOffUseCase useCase;
@@ -35,10 +42,13 @@ public class AssetTaxWriteOffController {
             BigDecimal writeoffAmount,
             BigDecimal remainingTaxBasis,
             String writeoffReason,
+            String status,
+            UUID approvedBy,
+            Instant approvedAt,
             Instant createdAt
     ) {}
 
-    @PostMapping
+    @PostMapping("/assets/{assetId}/tax-writeoffs")
     public ResponseEntity<WriteOffResponse> executeWriteOff(
             @PathVariable UUID organizationId,
             @PathVariable UUID assetId,
@@ -54,7 +64,7 @@ public class AssetTaxWriteOffController {
         return ResponseEntity.ok(toResponse(writeOff));
     }
 
-    @GetMapping
+    @GetMapping("/assets/{assetId}/tax-writeoffs")
     public ResponseEntity<List<WriteOffResponse>> getWriteOffHistory(
             @PathVariable UUID organizationId,
             @PathVariable UUID assetId) {
@@ -63,6 +73,26 @@ public class AssetTaxWriteOffController {
                 .map(this::toResponse)
                 .toList();
         return ResponseEntity.ok(list);
+    }
+
+    @PostMapping("/tax-writeoffs/{id}/approve")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FINANCE_DIRECTOR')")
+    public ResponseEntity<WriteOffResponse> approveWriteOff(
+            @PathVariable UUID organizationId,
+            @PathVariable UUID id,
+            @RequestParam UUID approverUserId) {
+        AssetTaxWriteOff approved = useCase.approveWriteOff(organizationId, id, approverUserId);
+        return ResponseEntity.ok(toResponse(approved));
+    }
+
+    @PostMapping("/tax-writeoffs/{id}/reject")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FINANCE_DIRECTOR')")
+    public ResponseEntity<WriteOffResponse> rejectWriteOff(
+            @PathVariable UUID organizationId,
+            @PathVariable UUID id,
+            @RequestParam UUID approverUserId) {
+        AssetTaxWriteOff rejected = useCase.rejectWriteOff(organizationId, id, approverUserId);
+        return ResponseEntity.ok(toResponse(rejected));
     }
 
     private WriteOffResponse toResponse(AssetTaxWriteOff w) {
@@ -74,6 +104,9 @@ public class AssetTaxWriteOffController {
                 w.getWriteoffAmount(),
                 w.getRemainingTaxBasis(),
                 w.getWriteoffReason(),
+                w.getStatus().name(),
+                w.getApprovedBy(),
+                w.getApprovedAt(),
                 w.getCreatedAt()
         );
     }

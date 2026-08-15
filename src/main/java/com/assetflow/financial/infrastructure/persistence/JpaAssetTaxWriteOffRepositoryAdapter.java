@@ -5,6 +5,7 @@ import com.assetflow.financial.domain.AssetTaxWriteOffRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -24,6 +25,11 @@ public class JpaAssetTaxWriteOffRepositoryAdapter implements AssetTaxWriteOffRep
     }
 
     @Override
+    public Optional<AssetTaxWriteOff> findById(UUID id) {
+        return repository.findById(id).map(this::toDomain);
+    }
+
+    @Override
     public List<AssetTaxWriteOff> findByOrganizationIdAndAssetId(UUID organizationId, UUID assetId) {
         return repository.findByOrganizationIdAndAssetId(organizationId, assetId)
                 .stream()
@@ -40,11 +46,22 @@ public class JpaAssetTaxWriteOffRepositoryAdapter implements AssetTaxWriteOffRep
         entity.setWriteoffAmount(domain.getWriteoffAmount());
         entity.setRemainingTaxBasis(domain.getRemainingTaxBasis());
         entity.setWriteoffReason(domain.getWriteoffReason());
+        entity.setStatus(domain.getStatus().name());
+        entity.setApprovedBy(domain.getApprovedBy());
+        entity.setApprovedAt(domain.getApprovedAt());
         entity.setCreatedAt(domain.getCreatedAt());
         return entity;
     }
 
     private AssetTaxWriteOff toDomain(AssetTaxWriteOffJpaEntity entity) {
+        AssetTaxWriteOff.WriteOffStatus status = AssetTaxWriteOff.WriteOffStatus.APPROVED;
+        if (entity.getStatus() != null) {
+            try {
+                status = AssetTaxWriteOff.WriteOffStatus.valueOf(entity.getStatus().toUpperCase());
+            } catch (Exception ignored) {
+            }
+        }
+
         return new AssetTaxWriteOff(
                 entity.getId(),
                 entity.getOrganizationId(),
@@ -53,6 +70,9 @@ public class JpaAssetTaxWriteOffRepositoryAdapter implements AssetTaxWriteOffRep
                 entity.getWriteoffAmount(),
                 entity.getRemainingTaxBasis(),
                 entity.getWriteoffReason(),
+                status,
+                entity.getApprovedBy(),
+                entity.getApprovedAt(),
                 entity.getCreatedAt()
         );
     }
