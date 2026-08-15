@@ -22,6 +22,9 @@ public class MaintenancePartItemJpaEntity {
     @Column(name = "maintenance_id", nullable = false)
     private UUID maintenanceId;
 
+    @Column(name = "spare_part_id")
+    private UUID sparePartId;
+
     @Column(name = "part_name", nullable = false)
     private String partName;
 
@@ -37,6 +40,9 @@ public class MaintenancePartItemJpaEntity {
     @Column(name = "total_cost", nullable = false)
     private BigDecimal totalCost;
 
+    @Column(name = "inventory_deducted")
+    private boolean inventoryDeducted;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -50,6 +56,9 @@ public class MaintenancePartItemJpaEntity {
 
     public UUID getMaintenanceId() { return maintenanceId; }
     public void setMaintenanceId(UUID maintenanceId) { this.maintenanceId = maintenanceId; }
+
+    public UUID getSparePartId() { return sparePartId; }
+    public void setSparePartId(UUID sparePartId) { this.sparePartId = sparePartId; }
 
     public String getPartName() { return partName; }
     public void setPartName(String partName) { this.partName = partName; }
@@ -65,6 +74,9 @@ public class MaintenancePartItemJpaEntity {
 
     public BigDecimal getTotalCost() { return totalCost; }
     public void setTotalCost(BigDecimal totalCost) { this.totalCost = totalCost; }
+
+    public boolean isInventoryDeducted() { return inventoryDeducted; }
+    public void setInventoryDeducted(boolean inventoryDeducted) { this.inventoryDeducted = inventoryDeducted; }
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }

@@ -3,7 +3,12 @@ package com.assetflow.maintenance.api;
 import com.assetflow.maintenance.application.MaintenancePartsUseCase;
 import com.assetflow.maintenance.domain.MaintenancePartItem;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -21,6 +26,7 @@ public class MaintenancePartsController {
     }
 
     public record AddPartRequest(
+            UUID sparePartId,
             String partName,
             String partNumber,
             int quantityUsed,
@@ -31,11 +37,13 @@ public class MaintenancePartsController {
             UUID id,
             UUID organizationId,
             UUID maintenanceId,
+            UUID sparePartId,
             String partName,
             String partNumber,
             int quantityUsed,
             BigDecimal unitCost,
             BigDecimal totalCost,
+            boolean inventoryDeducted,
             Instant createdAt
     ) {}
 
@@ -53,6 +61,7 @@ public class MaintenancePartsController {
         MaintenancePartItem item = useCase.addPartToMaintenance(
                 organizationId,
                 maintenanceId,
+                request.sparePartId(),
                 request.partName(),
                 request.partNumber(),
                 request.quantityUsed(),
@@ -86,11 +95,13 @@ public class MaintenancePartsController {
                 item.getId(),
                 item.getOrganizationId(),
                 item.getMaintenanceId(),
+                item.getSparePartId(),
                 item.getPartName(),
                 item.getPartNumber(),
                 item.getQuantityUsed(),
                 item.getUnitCost(),
                 item.getTotalCost(),
+                item.isInventoryDeducted(),
                 item.getCreatedAt()
         );
     }

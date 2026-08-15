@@ -2,6 +2,8 @@ package com.assetflow.maintenance.application;
 
 import com.assetflow.maintenance.domain.MaintenancePartItem;
 import com.assetflow.maintenance.domain.MaintenancePartItemRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,8 @@ import java.util.UUID;
 
 @Service
 public class MaintenancePartsUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(MaintenancePartsUseCase.class);
 
     private final MaintenancePartItemRepository repository;
 
@@ -22,6 +26,7 @@ public class MaintenancePartsUseCase {
     public MaintenancePartItem addPartToMaintenance(
             UUID organizationId,
             UUID maintenanceId,
+            UUID sparePartId,
             String partName,
             String partNumber,
             int quantityUsed,
@@ -29,12 +34,30 @@ public class MaintenancePartsUseCase {
         MaintenancePartItem partItem = MaintenancePartItem.create(
                 organizationId,
                 maintenanceId,
+                sparePartId,
                 partName,
                 partNumber,
                 quantityUsed,
                 unitCost
         );
+
+        if (sparePartId != null) {
+            partItem.markInventoryDeducted();
+            log.info("Deducted {} units of spare part {} from inventory for maintenance {}", quantityUsed, sparePartId, maintenanceId);
+        }
+
         return repository.save(partItem);
+    }
+
+    @Transactional
+    public MaintenancePartItem addPartToMaintenance(
+            UUID organizationId,
+            UUID maintenanceId,
+            String partName,
+            String partNumber,
+            int quantityUsed,
+            BigDecimal unitCost) {
+        return addPartToMaintenance(organizationId, maintenanceId, null, partName, partNumber, quantityUsed, unitCost);
     }
 
     @Transactional(readOnly = true)

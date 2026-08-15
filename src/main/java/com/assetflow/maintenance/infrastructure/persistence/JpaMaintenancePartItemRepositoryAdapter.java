@@ -36,11 +36,13 @@ public class JpaMaintenancePartItemRepositoryAdapter implements MaintenancePartI
         entity.setId(domain.getId());
         entity.setOrganizationId(domain.getOrganizationId());
         entity.setMaintenanceId(domain.getMaintenanceId());
+        entity.setSparePartId(domain.getSparePartId());
         entity.setPartName(domain.getPartName());
         entity.setPartNumber(domain.getPartNumber());
         entity.setQuantityUsed(domain.getQuantityUsed());
         entity.setUnitCost(domain.getUnitCost());
         entity.setTotalCost(domain.getTotalCost());
+        entity.setInventoryDeducted(domain.isInventoryDeducted());
         entity.setCreatedAt(domain.getCreatedAt());
         return entity;
     }
@@ -50,11 +52,13 @@ public class JpaMaintenancePartItemRepositoryAdapter implements MaintenancePartI
                 entity.getId(),
                 entity.getOrganizationId(),
                 entity.getMaintenanceId(),
+                entity.getSparePartId(),
                 entity.getPartName(),
                 entity.getPartNumber(),
                 entity.getQuantityUsed(),
                 entity.getUnitCost(),
                 entity.getTotalCost(),
+                entity.isInventoryDeducted(),
                 entity.getCreatedAt()
         );
     }
