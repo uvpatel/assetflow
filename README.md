@@ -177,7 +177,7 @@ shared    │                  ├─→ asset ──┐
 
 | Component | Technology | Version |
 |-----------|-----------|---------|
-| **Language** | Java | 21+ |
+| **Language** | Java | 21 LTS |
 | **Framework** | Spring Boot | 3.4+ |
 | **Web** | Spring Web MVC | 3.4+ |
 | **Database** | PostgreSQL | 16+ |
@@ -198,14 +198,22 @@ shared    │                  ├─→ asset ──┐
 ```bash
 # Required tools
 - Docker & Docker Compose (v20+)
-- Java 21 or newer (JDK, not JRE)
+- Java 21 LTS (JDK, not JRE)
 - Maven 3.8+
 - Git
 
 # Verify installation
 docker --version    # Docker version 20+
-java -version       # Java 21+
+java -version       # Java 21
 mvn --version       # Maven 3.8+
+```
+
+On macOS with Homebrew, select Java 21 before using Maven:
+
+```bash
+export JAVA_HOME="$(brew --prefix openjdk@21)/libexec/openjdk.jdk/Contents/Home"
+export PATH="$JAVA_HOME/bin:$PATH"
+java -version        # Java 21
 ```
 
 ### 2. Clone and Setup
@@ -227,6 +235,17 @@ Verify services are healthy:
 docker compose ps
 ```
 
+### Using Neon Postgres
+
+Copy the example configuration and set `JDBC_DATABASE_URL` to the JDBC URL supplied by Neon. Do not commit `.env`; it is loaded locally by Spring Boot and ignored by Git.
+
+```bash
+cp .env.example .env
+# Set JDBC_DATABASE_URL=jdbc:postgresql://...?... in .env
+```
+
+Local Docker settings remain the default when `JDBC_DATABASE_URL` is unset.
+
 Services now running:
 - **PostgreSQL**: `jdbc:postgresql://localhost:5432/assetflow`
   - User: `assetflow` | Password: `assetflow`
@@ -238,7 +257,7 @@ Services now running:
 
 ```bash
 # Build the project
-mvn clean install
+./mvnw clean install
 
 # Run the application
 ./mvnw spring-boot:run
@@ -247,7 +266,7 @@ mvn clean install
 Or run tests:
 
 ```bash
-mvn clean verify
+./mvnw clean verify
 ```
 
 ### 5. Access Services
@@ -768,7 +787,7 @@ src/main/resources/
 
 | Aspect | Standard |
 |--------|----------|
-| **Language** | Java 21+, Spring Boot 3.4+ conventions |
+| **Language** | Java 21 LTS, Spring Boot 3.4+ conventions |
 | **Code Style** | Google Java Style Guide (Checkstyle) |
 | **Testing** | Minimum 80% code coverage, BDD test names |
 | **Documentation** | Javadoc on public APIs, ADRs for decisions |
