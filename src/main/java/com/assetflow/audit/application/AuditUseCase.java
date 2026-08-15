@@ -75,6 +75,15 @@ public class AuditUseCase {
             throw new DomainViolationException("Audit cycle is already closed");
         }
 
+        List<AuditItem> pendingItems = auditItemRepository.findByAuditCycleId(cycleId).stream()
+                .filter(item -> "PENDING".equals(item.getVerificationStatus()))
+                .toList();
+
+        for (AuditItem item : pendingItems) {
+            item.verify(null, "MISSING", "Unverified during audit cycle closure");
+        }
+        auditItemRepository.saveAll(pendingItems);
+
         cycle.close();
         return auditCycleRepository.save(cycle);
     }
