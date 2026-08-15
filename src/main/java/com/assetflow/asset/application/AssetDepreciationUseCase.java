@@ -38,7 +38,7 @@ public class AssetDepreciationUseCase {
     public AssetDepreciationSchedule calculateDepreciation(UUID organizationId, UUID assetId, int elapsedMonths) {
         AssetDepreciationSchedule schedule = repository.findByOrganizationIdAndAssetId(organizationId, assetId)
                 .orElseThrow(() -> new IllegalArgumentException("Depreciation schedule not found for asset " + assetId));
-        schedule.calculateStraightLine(elapsedMonths);
+        schedule.calculate(elapsedMonths);
         return repository.save(schedule);
     }
 
