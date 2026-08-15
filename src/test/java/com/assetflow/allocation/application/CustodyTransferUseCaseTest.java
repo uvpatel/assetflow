@@ -4,7 +4,6 @@ import com.assetflow.allocation.api.dto.AcceptCustodyTransferRequest;
 import com.assetflow.allocation.api.dto.CustodyTransferResponse;
 import com.assetflow.allocation.api.dto.InitiateCustodyTransferRequest;
 import com.assetflow.allocation.domain.CustodyTransfer;
-import com.assetflow.allocation.domain.CustodyTransferItem;
 import com.assetflow.allocation.domain.CustodyTransferItemRepository;
 import com.assetflow.allocation.domain.CustodyTransferRepository;
 import com.assetflow.shared.security.TenantContext;

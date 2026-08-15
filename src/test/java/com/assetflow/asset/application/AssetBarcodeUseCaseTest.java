@@ -3,7 +3,6 @@ package com.assetflow.asset.application;
 import com.assetflow.asset.domain.Asset;
 import com.assetflow.asset.domain.AssetBarcode;
 import com.assetflow.asset.domain.AssetRepository;
-import com.assetflow.asset.domain.AssetStatus;
 import com.assetflow.shared.error.ResourceNotFoundException;
 import com.assetflow.shared.security.TenantContext;
 import org.junit.jupiter.api.AfterEach;

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -58,9 +58,6 @@ public class DepartmentHierarchyUseCase {
     @Transactional(readOnly = true)
     public List<DepartmentTreeNodeDto> getDepartmentTree(UUID organizationId) {
         List<Department> departments = departmentRepository.findByOrganizationId(organizationId);
-        Map<UUID, Department> departmentMap = departments.stream()
-                .collect(Collectors.toMap(Department::getId, Function.identity()));
-
         List<DepartmentHierarchy> hierarchies = repository.findByOrganizationId(organizationId);
         Map<UUID, UUID> parentMap = hierarchies.stream()
                 .filter(h -> h.getParentDepartmentId() != null)

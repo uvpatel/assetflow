@@ -1,6 +1,5 @@
 package com.assetflow.financial.application;
 
-import com.assetflow.asset.domain.Asset;
 import com.assetflow.asset.domain.AssetRepository;
 import com.assetflow.asset.domain.AssetStatus;
 import com.assetflow.financial.domain.AssetTaxWriteOff;

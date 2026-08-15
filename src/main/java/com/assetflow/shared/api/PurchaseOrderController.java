@@ -1,9 +1,17 @@
 package com.assetflow.shared.api;
 
+import com.assetflow.asset.domain.Asset;
 import com.assetflow.shared.application.PurchaseOrderUseCase;
 import com.assetflow.shared.domain.PurchaseOrder;
+import com.assetflow.shared.domain.PurchaseOrderItem;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -24,6 +32,17 @@ public class PurchaseOrderController {
             UUID vendorId,
             String poNumber,
             BigDecimal initialTotal
+    ) {}
+
+    public record AddPoItemRequest(
+            String itemDescription,
+            UUID categoryId,
+            BigDecimal unitPrice,
+            int quantityOrdered
+    ) {}
+
+    public record ReceivePoItemRequest(
+            int quantityReceived
     ) {}
 
     public record PurchaseOrderResponse(
@@ -47,6 +66,37 @@ public class PurchaseOrderController {
                 request.initialTotal()
         );
         return ResponseEntity.ok(toResponse(po));
+    }
+
+    @PostMapping("/{poId}/items")
+    public ResponseEntity<PurchaseOrderItem> addLineItem(
+            @PathVariable UUID organizationId,
+            @PathVariable UUID poId,
+            @RequestBody AddPoItemRequest request) {
+        PurchaseOrderItem item = useCase.addPurchaseOrderItem(
+                organizationId,
+                poId,
+                request.itemDescription(),
+                request.categoryId(),
+                request.unitPrice(),
+                request.quantityOrdered()
+        );
+        return ResponseEntity.ok(item);
+    }
+
+    @PostMapping("/{poId}/items/{itemId}/receive")
+    public ResponseEntity<List<Asset>> receiveItem(
+            @PathVariable UUID organizationId,
+            @PathVariable UUID poId,
+            @PathVariable UUID itemId,
+            @RequestBody ReceivePoItemRequest request) {
+        List<Asset> createdAssets = useCase.receivePurchaseOrderItem(
+                organizationId,
+                poId,
+                itemId,
+                request.quantityReceived()
+        );
+        return ResponseEntity.ok(createdAssets);
     }
 
     @PostMapping("/{poId}/issue")
