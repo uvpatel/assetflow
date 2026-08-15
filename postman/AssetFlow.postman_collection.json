@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "a0b1c2d3-e4f5-6789-abcd-ef0123456789",
+		"name": "AssetFlow Enterprise API Collection",
+		"description": "Production-grade API Collection for AssetFlow Spring Boot Backend connected to Neon Serverless PostgreSQL.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Actuator & Health",
+			"item": [
+				{
+					"name": "Get Health Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["actuator", "health"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "User Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@assetflow.example\",\n  \"password\": \"Password123!\",\n  \"organizationId\": \"00000000-0000-0000-0000-000000000001\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/signup",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "signup"]
+						}
+					}
+				},
+				{
+					"name": "User Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@assetflow.example\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "v1", "auth", "login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Organization & Departments",
+			"item": [
+				{
+					"name": "Create Department",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organizationId\": \"00000000-0000-0000-0000-000000000001\",\n  \"name\": \"Engineering & Software\",\n  \"code\": \"ENG-001\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/organization/departments",
+							"host": ["{{baseUrl}}"],
+							"path": ["organization", "departments"]
+						}
+					}
+				},
+				{
+					"name": "List Departments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/organization/departments",
+							"host": ["{{baseUrl}}"],
+							"path": ["organization", "departments"]
+						}
+					}
+				},
+				{
+					"name": "Create Employee",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organizationId\": \"00000000-0000-0000-0000-000000000001\",\n  \"departmentId\": \"{{departmentId}}\",\n  \"employeeNumber\": \"EMP-101\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"johndoe@assetflow.example\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/organization/employees",
+							"host": ["{{baseUrl}}"],
+							"path": ["organization", "employees"]
+						}
+					}
+				},
+				{
+					"name": "List Employees",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/organization/employees",
+							"host": ["{{baseUrl}}"],
+							"path": ["organization", "employees"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Asset Management",
+			"item": [
+				{
+					"name": "Create Asset Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organizationId\": \"00000000-0000-0000-0000-000000000001\",\n  \"name\": \"Laptops & Workstations\",\n  \"code\": \"LAPTOP\",\n  \"description\": \"Developer Workstations\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories"]
+						}
+					}
+				},
+				{
+					"name": "List Asset Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories"]
+						}
+					}
+				},
+				{
+					"name": "Register Asset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"categoryId\": \"{{categoryId}}\",\n  \"assetTag\": \"TAG-9901\",\n  \"name\": \"MacBook Pro M3 Max\",\n  \"description\": \"Developer Workstation 64GB RAM\",\n  \"serialNumber\": \"SN-9901-MAX\",\n  \"location\": \"HQ - Floor 3\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/assets",
+							"host": ["{{baseUrl}}"],
+							"path": ["assets"]
+						}
+					}
+				},
+				{
+					"name": "List Assets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/assets",
+							"host": ["{{baseUrl}}"],
+							"path": ["assets"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

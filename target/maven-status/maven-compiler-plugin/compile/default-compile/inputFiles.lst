@@ -243,8 +243,10 @@
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/organization/domain/Employee.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/organization/domain/EmployeeRepository.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/organization/domain/Organization.java
+/Users/urvilpatel/assetflow/src/main/java/com/assetflow/organization/domain/OrganizationRepository.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/organization/infrastructure/JpaDepartmentHierarchyRepositoryAdapter.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/organization/infrastructure/JpaDepartmentRepositoryAdapter.java
+/Users/urvilpatel/assetflow/src/main/java/com/assetflow/organization/infrastructure/JpaOrganizationRepositoryAdapter.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/reporting/api/BulkImportBatchController.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/reporting/api/DashboardController.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/reporting/api/PdfReportController.java
@@ -275,6 +277,7 @@
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/application/PurchaseOrderUseCase.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/application/VendorContractUseCase.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/application/VendorPerformanceEvaluationUseCase.java
+/Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/config/DataSeeder.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/config/JpaAuditingConfig.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/config/NeonDataSourceConfig.java
 /Users/urvilpatel/assetflow/src/main/java/com/assetflow/shared/config/ShedLockConfig.java

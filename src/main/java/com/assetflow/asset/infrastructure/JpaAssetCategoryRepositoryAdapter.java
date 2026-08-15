@@ -3,7 +3,7 @@ package com.assetflow.asset.infrastructure;
 import com.assetflow.asset.domain.Asset;
 import com.assetflow.asset.domain.AssetCategory;
 import com.assetflow.asset.domain.AssetCategoryRepository;
-import com.assetflow.asset.domain.AssetRepository;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

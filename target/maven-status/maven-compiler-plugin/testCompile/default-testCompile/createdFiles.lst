@@ -34,6 +34,7 @@ com/assetflow/identity/api/AuthControllerTest.class
 com/assetflow/shared/domain/DataRetentionPolicyTest.class
 com/assetflow/ArchitectureTest.class
 com/assetflow/maintenance/domain/MaintenancePartItemTest.class
+com/assetflow/shared/config/DataSeederTest.class
 com/assetflow/reporting/domain/SavedSearchPresetTest.class
 com/assetflow/identity/infrastructure/security/JwtTokenProviderTest.class
 com/assetflow/identity/application/SignupUseCaseTest.class

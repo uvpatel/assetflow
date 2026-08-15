@@ -26,6 +26,7 @@
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/organization/domain/DepartmentHierarchyTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/reporting/application/PdfReportServiceTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/reporting/domain/SavedSearchPresetTest.java
+/Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/config/DataSeederTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/domain/DataRetentionPolicyTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/domain/FeatureFlagTest.java
 /Users/urvilpatel/assetflow/src/test/java/com/assetflow/shared/domain/PurchaseOrderTest.java

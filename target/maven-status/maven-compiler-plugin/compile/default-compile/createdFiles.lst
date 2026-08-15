@@ -28,6 +28,7 @@ com/assetflow/asset/domain/AssetCustomFieldValueRepository.class
 com/assetflow/asset/api/SoftwareLicenseController$LicenseResponse.class
 com/assetflow/maintenance/domain/TechnicianWorkload.class
 com/assetflow/webhook/infrastructure/SpringDataWebhookSubscriptionRepository.class
+com/assetflow/organization/infrastructure/JpaOrganizationRepositoryAdapter.class
 com/assetflow/asset/infrastructure/persistence/LicenseComplianceAuditJpaEntity.class
 com/assetflow/financial/api/AssetTaxWriteOffController.class
 com/assetflow/asset/domain/AssetCategory.class
@@ -127,6 +128,7 @@ com/assetflow/audit/domain/AuditDiscrepancyResolution$ResolutionAction.class
 com/assetflow/audit/application/AuditDiscrepancyResolutionUseCase.class
 com/assetflow/organization/domain/EmployeeRepository.class
 com/assetflow/asset/domain/AssetConditionAssessmentRepository.class
+com/assetflow/shared/config/DataSeeder.class
 com/assetflow/reporting/api/SavedSearchPresetController$PresetResponse.class
 com/assetflow/reporting/api/SavedSearchPresetController.class
 com/assetflow/asset/domain/ConsumableAsset.class
@@ -273,6 +275,7 @@ com/assetflow/maintenance/domain/AssetMaintenanceSchedule.class
 com/assetflow/maintenance/domain/MaintenanceSlaPolicy$Priority.class
 com/assetflow/identity/domain/UserAccount.class
 com/assetflow/asset/application/ConsumableBatchUseCase.class
+com/assetflow/organization/domain/OrganizationRepository.class
 com/assetflow/shared/api/FeatureFlagController$CreateFlagRequest.class
 com/assetflow/maintenance/application/AssetMaintenanceScheduleUseCase.class
 com/assetflow/reporting/api/SavedSearchPresetController$CreatePresetRequest.class
@@ -391,6 +394,7 @@ com/assetflow/reporting/api/dto/OrganizationDashboardSummaryDto.class
 com/assetflow/shared/application/FeatureFlagUseCase.class
 com/assetflow/asset/api/dto/RegisterAssetRequest.class
 com/assetflow/asset/application/LicenseComplianceAuditUseCase.class
+com/assetflow/organization/infrastructure/SpringDataOrganizationRepository.class
 com/assetflow/asset/api/AssetBarcodeController.class
 com/assetflow/notification/infrastructure/SpringDataNotificationRepository.class
 com/assetflow/asset/api/LicenseComplianceAuditController.class
