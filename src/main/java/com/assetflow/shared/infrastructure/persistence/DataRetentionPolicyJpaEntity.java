@@ -30,6 +30,12 @@ public class DataRetentionPolicyJpaEntity {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
+    @Column(name = "last_executed_at")
+    private Instant lastExecutedAt;
+
+    @Column(name = "records_processed")
+    private int recordsProcessed;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -55,6 +61,12 @@ public class DataRetentionPolicyJpaEntity {
 
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }
+
+    public Instant getLastExecutedAt() { return lastExecutedAt; }
+    public void setLastExecutedAt(Instant lastExecutedAt) { this.lastExecutedAt = lastExecutedAt; }
+
+    public int getRecordsProcessed() { return recordsProcessed; }
+    public void setRecordsProcessed(int recordsProcessed) { this.recordsProcessed = recordsProcessed; }
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }

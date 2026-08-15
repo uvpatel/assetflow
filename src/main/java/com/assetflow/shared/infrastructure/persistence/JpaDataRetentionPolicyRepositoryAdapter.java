@@ -50,6 +50,8 @@ public class JpaDataRetentionPolicyRepositoryAdapter implements DataRetentionPol
         entity.setRetentionDays(domain.getRetentionDays());
         entity.setAction(domain.getAction().name());
         entity.setActive(domain.isActive());
+        entity.setLastExecutedAt(domain.getLastExecutedAt());
+        entity.setRecordsProcessed(domain.getRecordsProcessed());
         entity.setCreatedAt(domain.getCreatedAt());
         entity.setUpdatedAt(domain.getUpdatedAt());
         return entity;
@@ -63,6 +65,8 @@ public class JpaDataRetentionPolicyRepositoryAdapter implements DataRetentionPol
                 entity.getRetentionDays(),
                 DataRetentionPolicy.RetentionAction.valueOf(entity.getAction()),
                 entity.isActive(),
+                entity.getLastExecutedAt(),
+                entity.getRecordsProcessed(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

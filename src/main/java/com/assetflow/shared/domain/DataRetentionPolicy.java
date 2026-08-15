@@ -11,6 +11,8 @@ public class DataRetentionPolicy {
     private int retentionDays;
     private RetentionAction action;
     private boolean isActive;
+    private Instant lastExecutedAt;
+    private int recordsProcessed;
     private final Instant createdAt;
     private Instant updatedAt;
 
@@ -27,6 +29,8 @@ public class DataRetentionPolicy {
             int retentionDays,
             RetentionAction action,
             boolean isActive,
+            Instant lastExecutedAt,
+            int recordsProcessed,
             Instant createdAt,
             Instant updatedAt) {
         if (retentionDays <= 0) {
@@ -38,8 +42,22 @@ public class DataRetentionPolicy {
         this.retentionDays = retentionDays;
         this.action = action;
         this.isActive = isActive;
+        this.lastExecutedAt = lastExecutedAt;
+        this.recordsProcessed = recordsProcessed;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public DataRetentionPolicy(
+            UUID id,
+            UUID organizationId,
+            String targetModule,
+            int retentionDays,
+            RetentionAction action,
+            boolean isActive,
+            Instant createdAt,
+            Instant updatedAt) {
+        this(id, organizationId, targetModule, retentionDays, action, isActive, null, 0, createdAt, updatedAt);
     }
 
     public static DataRetentionPolicy create(
@@ -55,6 +73,8 @@ public class DataRetentionPolicy {
                 retentionDays,
                 action,
                 true,
+                null,
+                0,
                 now,
                 now
         );
@@ -74,12 +94,20 @@ public class DataRetentionPolicy {
         this.updatedAt = Instant.now();
     }
 
+    public void markExecuted(int processedCount) {
+        this.recordsProcessed += processedCount;
+        this.lastExecutedAt = Instant.now();
+        this.updatedAt = Instant.now();
+    }
+
     public UUID getId() { return id; }
     public UUID getOrganizationId() { return organizationId; }
     public String getTargetModule() { return targetModule; }
     public int getRetentionDays() { return retentionDays; }
     public RetentionAction getAction() { return action; }
     public boolean isActive() { return isActive; }
+    public Instant getLastExecutedAt() { return lastExecutedAt; }
+    public int getRecordsProcessed() { return recordsProcessed; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 }

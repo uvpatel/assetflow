@@ -1,5 +1,6 @@
 package com.assetflow.shared.domain;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -12,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class DataRetentionPolicyTest {
 
     @Test
+    @DisplayName("Should create policy and calculate cutoff timestamp correctly")
     void shouldCreateAndCalculateRetentionCutoffCorrectly() {
         UUID orgId = UUID.randomUUID();
         Instant refTime = Instant.now();
@@ -34,6 +36,24 @@ class DataRetentionPolicyTest {
     }
 
     @Test
+    @DisplayName("Should update execution tracking stats on markExecuted")
+    void shouldUpdateExecutionTrackingOnMarkExecuted() {
+        UUID orgId = UUID.randomUUID();
+        DataRetentionPolicy policy = DataRetentionPolicy.create(
+                orgId,
+                "OUTBOX",
+                30,
+                DataRetentionPolicy.RetentionAction.ARCHIVE
+        );
+
+        policy.markExecuted(150);
+
+        assertThat(policy.getRecordsProcessed()).isEqualTo(150);
+        assertThat(policy.getLastExecutedAt()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Should reject invalid retention days")
     void shouldRejectInvalidRetentionDays() {
         UUID orgId = UUID.randomUUID();
 
