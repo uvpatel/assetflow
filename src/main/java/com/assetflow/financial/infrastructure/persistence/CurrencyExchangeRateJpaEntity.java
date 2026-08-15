@@ -32,6 +32,12 @@ public class CurrencyExchangeRateJpaEntity {
     @Column(name = "effective_date", nullable = false)
     private LocalDate effectiveDate;
 
+    @Column(name = "rate_source")
+    private String rateSource = "MANUAL";
+
+    @Column(name = "is_active")
+    private boolean isActive = true;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -57,6 +63,12 @@ public class CurrencyExchangeRateJpaEntity {
 
     public LocalDate getEffectiveDate() { return effectiveDate; }
     public void setEffectiveDate(LocalDate effectiveDate) { this.effectiveDate = effectiveDate; }
+
+    public String getRateSource() { return rateSource; }
+    public void setRateSource(String rateSource) { this.rateSource = rateSource; }
+
+    public boolean isActive() { return isActive; }
+    public void setActive(boolean active) { isActive = active; }
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }

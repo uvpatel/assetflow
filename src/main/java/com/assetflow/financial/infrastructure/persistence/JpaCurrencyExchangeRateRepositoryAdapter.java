@@ -46,12 +46,22 @@ public class JpaCurrencyExchangeRateRepositoryAdapter implements CurrencyExchang
         entity.setToCurrency(domain.getToCurrency());
         entity.setExchangeRate(domain.getExchangeRate());
         entity.setEffectiveDate(domain.getEffectiveDate());
+        entity.setRateSource(domain.getRateSource().name());
+        entity.setActive(domain.isActive());
         entity.setCreatedAt(domain.getCreatedAt());
         entity.setUpdatedAt(domain.getUpdatedAt());
         return entity;
     }
 
     private CurrencyExchangeRate toDomain(CurrencyExchangeRateJpaEntity entity) {
+        CurrencyExchangeRate.RateSource source = CurrencyExchangeRate.RateSource.MANUAL;
+        if (entity.getRateSource() != null) {
+            try {
+                source = CurrencyExchangeRate.RateSource.valueOf(entity.getRateSource().toUpperCase());
+            } catch (Exception ignored) {
+            }
+        }
+
         return new CurrencyExchangeRate(
                 entity.getId(),
                 entity.getOrganizationId(),
@@ -59,6 +69,8 @@ public class JpaCurrencyExchangeRateRepositoryAdapter implements CurrencyExchang
                 entity.getToCurrency(),
                 entity.getExchangeRate(),
                 entity.getEffectiveDate(),
+                source,
+                entity.isActive(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

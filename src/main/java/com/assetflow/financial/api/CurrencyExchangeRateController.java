@@ -3,7 +3,13 @@ package com.assetflow.financial.api;
 import com.assetflow.financial.application.CurrencyExchangeRateUseCase;
 import com.assetflow.financial.domain.CurrencyExchangeRate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,7 +30,8 @@ public class CurrencyExchangeRateController {
             String fromCurrency,
             String toCurrency,
             BigDecimal exchangeRate,
-            LocalDate effectiveDate
+            LocalDate effectiveDate,
+            String rateSource
     ) {}
 
     public record ExchangeRateResponse(
@@ -33,7 +40,8 @@ public class CurrencyExchangeRateController {
             String fromCurrency,
             String toCurrency,
             BigDecimal exchangeRate,
-            LocalDate effectiveDate
+            LocalDate effectiveDate,
+            String rateSource
     ) {}
 
     public record ConversionResponse(
@@ -53,7 +61,8 @@ public class CurrencyExchangeRateController {
                 request.fromCurrency(),
                 request.toCurrency(),
                 request.exchangeRate(),
-                request.effectiveDate()
+                request.effectiveDate(),
+                request.rateSource()
         );
         return ResponseEntity.ok(toResponse(rate));
     }
@@ -86,7 +95,8 @@ public class CurrencyExchangeRateController {
                 r.getFromCurrency(),
                 r.getToCurrency(),
                 r.getExchangeRate(),
-                r.getEffectiveDate()
+                r.getEffectiveDate(),
+                r.getRateSource().name()
         );
     }
 }
