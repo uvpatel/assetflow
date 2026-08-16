@@ -1,0 +1,5 @@
+ALTER TABLE category_field_definitions
+ADD COLUMN IF NOT EXISTS validation_regex VARCHAR(255),
+ADD COLUMN IF NOT EXISTS default_value VARCHAR(255),
+ADD COLUMN IF NOT EXISTS min_value NUMERIC(19,4),
+ADD COLUMN IF NOT EXISTS max_value NUMERIC(19,4);
