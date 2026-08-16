@@ -2,8 +2,15 @@ package com.assetflow.asset.api;
 
 import com.assetflow.asset.application.AssetWarrantyUseCase;
 import com.assetflow.asset.domain.AssetWarranty;
+import com.assetflow.asset.domain.AssetWarrantyDocument;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.util.List;
@@ -26,6 +33,19 @@ public class AssetWarrantyController {
             Instant startDate,
             Instant endDate,
             String coverageDetails
+    ) {}
+
+    public record AttachWarrantyDocumentRequest(
+            String documentName,
+            String fileType,
+            long fileSizeBytes,
+            String storageUrl
+    ) {}
+
+    public record ExpiryAlertDispatchResponse(
+            UUID organizationId,
+            int daysAhead,
+            int alertsDispatched
     ) {}
 
     public record WarrantyResponse(
@@ -56,6 +76,38 @@ public class AssetWarrantyController {
                 request.coverageDetails()
         );
         return ResponseEntity.ok(toResponse(warranty));
+    }
+
+    @PostMapping("/warranties/{warrantyId}/documents")
+    public ResponseEntity<AssetWarrantyDocument> attachWarrantyDocument(
+            @PathVariable UUID organizationId,
+            @PathVariable UUID warrantyId,
+            @RequestBody AttachWarrantyDocumentRequest request) {
+        AssetWarrantyDocument doc = useCase.attachWarrantyDocument(
+                organizationId,
+                warrantyId,
+                request.documentName(),
+                request.fileType(),
+                request.fileSizeBytes(),
+                request.storageUrl()
+        );
+        return ResponseEntity.ok(doc);
+    }
+
+    @GetMapping("/warranties/{warrantyId}/documents")
+    public ResponseEntity<List<AssetWarrantyDocument>> getWarrantyDocuments(
+            @PathVariable UUID organizationId,
+            @PathVariable UUID warrantyId) {
+        List<AssetWarrantyDocument> list = useCase.getWarrantyDocuments(organizationId, warrantyId);
+        return ResponseEntity.ok(list);
+    }
+
+    @PostMapping("/warranties/dispatch-expiry-alerts")
+    public ResponseEntity<ExpiryAlertDispatchResponse> dispatchExpiryAlerts(
+            @PathVariable UUID organizationId,
+            @RequestParam(defaultValue = "30") int daysAhead) {
+        int count = useCase.dispatchWarrantyExpiryAlerts(organizationId, daysAhead);
+        return ResponseEntity.ok(new ExpiryAlertDispatchResponse(organizationId, daysAhead, count));
     }
 
     @GetMapping("/assets/{assetId}/warranties")
