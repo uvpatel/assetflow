@@ -55,12 +55,12 @@ class LoginUseCaseTest {
     }
 
     @Test
-    void shouldLoginSuccessfullyWithValidCredentials() {
+    void shouldLoginSuccessfullyWithValidCredentialsAndResetFailedAttempts() {
         UUID userId = UUID.randomUUID();
         UUID orgId = UUID.randomUUID();
         UserAccount user = new UserAccount(
                 userId, "user@example.com", "encodedHash", orgId,
-                UserStatus.ACTIVE, UserRole.EMPLOYEE, Instant.now(), Instant.now()
+                UserStatus.ACTIVE, UserRole.EMPLOYEE, 2, null, Instant.now(), Instant.now()
         );
 
         LoginRequest request = new LoginRequest("user@example.com", "password123");
@@ -76,15 +76,17 @@ class LoginUseCaseTest {
         assertThat(response.refreshToken()).isNotBlank();
         assertThat(response.expiresIn()).isEqualTo(900);
         assertThat(response.user().email()).isEqualTo("user@example.com");
+        assertThat(user.getFailedLoginAttempts()).isEqualTo(0);
 
+        verify(userRepository).save(user);
         verify(refreshTokenRepository).save(any(RefreshToken.class));
     }
 
     @Test
-    void shouldFailLoginWithInvalidPassword() {
+    void shouldIncrementFailedAttemptsOnInvalidPassword() {
         UserAccount user = new UserAccount(
                 UUID.randomUUID(), "user@example.com", "encodedHash", UUID.randomUUID(),
-                UserStatus.ACTIVE, UserRole.EMPLOYEE, Instant.now(), Instant.now()
+                UserStatus.ACTIVE, UserRole.EMPLOYEE, 0, null, Instant.now(), Instant.now()
         );
 
         LoginRequest request = new LoginRequest("user@example.com", "wrongPassword");
@@ -95,6 +97,46 @@ class LoginUseCaseTest {
         assertThatThrownBy(() -> loginUseCase.execute(request))
                 .isInstanceOf(DomainViolationException.class)
                 .hasMessageContaining("Invalid email or password");
+
+        assertThat(user.getFailedLoginAttempts()).isEqualTo(1);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void shouldLockAccountAfterReachingMaxFailedAttempts() {
+        UserAccount user = new UserAccount(
+                UUID.randomUUID(), "user@example.com", "encodedHash", UUID.randomUUID(),
+                UserStatus.ACTIVE, UserRole.EMPLOYEE, 4, null, Instant.now(), Instant.now()
+        );
+
+        LoginRequest request = new LoginRequest("user@example.com", "wrongPassword");
+
+        when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrongPassword", "encodedHash")).thenReturn(false);
+
+        assertThatThrownBy(() -> loginUseCase.execute(request))
+                .isInstanceOf(DomainViolationException.class)
+                .hasMessageContaining("Invalid email or password");
+
+        assertThat(user.getFailedLoginAttempts()).isEqualTo(5);
+        assertThat(user.isLocked(Instant.now())).isTrue();
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void shouldRejectLoginWhenAccountIsCurrentlyLocked() {
+        UserAccount user = new UserAccount(
+                UUID.randomUUID(), "locked@example.com", "encodedHash", UUID.randomUUID(),
+                UserStatus.ACTIVE, UserRole.EMPLOYEE, 5, Instant.now().plusSeconds(600), Instant.now(), Instant.now()
+        );
+
+        LoginRequest request = new LoginRequest("locked@example.com", "password123");
+
+        when(userRepository.findByEmail("locked@example.com")).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> loginUseCase.execute(request))
+                .isInstanceOf(DomainViolationException.class)
+                .hasMessageContaining("Account is temporarily locked");
     }
 
     @Test
@@ -112,7 +154,7 @@ class LoginUseCaseTest {
     void shouldFailLoginForInactiveUser() {
         UserAccount user = new UserAccount(
                 UUID.randomUUID(), "inactive@example.com", "encodedHash", UUID.randomUUID(),
-                UserStatus.INACTIVE, UserRole.EMPLOYEE, Instant.now(), Instant.now()
+                UserStatus.INACTIVE, UserRole.EMPLOYEE, 0, null, Instant.now(), Instant.now()
         );
 
         LoginRequest request = new LoginRequest("inactive@example.com", "password123");
