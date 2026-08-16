@@ -48,7 +48,15 @@ public class LoginUseCase {
         UserAccount user = userRepository.findByEmail(normalizedEmail)
                 .orElseThrow(() -> new DomainViolationException("Authentication Failed", "Invalid email or password."));
 
+        Instant now = Instant.now();
+
+        if (user.isLocked(now)) {
+            throw new DomainViolationException("Account Locked", "Account is temporarily locked due to multiple failed login attempts. Please try again later.");
+        }
+
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+            user.recordFailedLogin(now, UserAccount.DEFAULT_MAX_FAILED_ATTEMPTS, UserAccount.DEFAULT_LOCKOUT_DURATION_SECONDS);
+            userRepository.save(user);
             throw new DomainViolationException("Authentication Failed", "Invalid email or password.");
         }
 
@@ -56,11 +64,14 @@ public class LoginUseCase {
             throw new DomainViolationException("Account Inactive", "User account is not active.");
         }
 
+        user.recordSuccessfulLogin(now);
+        userRepository.save(user);
+
         String accessToken = tokenProvider.generateAccessToken(user);
         String rawRefreshToken = UUID.randomUUID().toString();
         String tokenHash = hashToken(rawRefreshToken);
 
-        Instant expiresAt = Instant.now().plusSeconds(jwtProperties.getRefreshTokenExpirationSeconds());
+        Instant expiresAt = now.plusSeconds(jwtProperties.getRefreshTokenExpirationSeconds());
         RefreshToken refreshToken = RefreshToken.create(user.getId(), tokenHash, expiresAt);
         refreshTokenRepository.save(refreshToken);
 
