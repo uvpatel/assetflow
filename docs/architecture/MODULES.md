@@ -14,19 +14,19 @@ The application consists of 14 bounded business contexts under `com.assetflow`:
 
 ```text
 com.assetflow/
-├── shared/            # Shared kernel, Security context, Base Exceptions, DB Config
-├── identity/          # Authentication, User Accounts, JWT, Password Policies
-├── organization/      # Multi-tenant Organization, Departments, Employee directory
-├── asset/             # Asset Catalog, Categories, Dynamic Fields, Bundles, Depreciation
+├── shared/            # Shared kernel, Security context, Base Exceptions, DB Config, Procurement & Vendor models
+├── identity/          # Authentication, User Accounts, JWT, Password Policies, Refresh Tokens, Sessions
+├── organization/      # Multi-tenant Organization, Departments, Employee directory, Invitations
+├── asset/             # Asset Catalog, Categories, Dynamic Fields, Bundles, Depreciation, Disposal, Barcodes
 ├── allocation/        # Asset Checkout, Transfers, Digital Handover, Active Uniqueness
 ├── booking/           # Shared Resource Calendar, Availability, Overlap Prevention
-├── maintenance/       # Work Orders, Technician Matching, Parts Cost, SLA Policies
+├── maintenance/       # Work Orders, Technician Matching, Parts Cost, SLA Policies, Schedules
 ├── audit/             # Audit Cycles, Snapshot Scope, QR Verification, Discrepancies
-├── notification/      # In-App Notifications, Outbox Pattern Email Dispatcher
+├── notification/      # In-App Notifications, Outbox Pattern Email Dispatcher, Queue Preferences
 ├── activitylog/       # Immutable Governance Audit Log
-├── reporting/         # Dashboard Projections, Analytics, PDF/CSV Reports
-├── financial/         # Currency Rates, Asset Tax Write-Off Engine
-├── webhook/           # Domain Event Subscriptions, Signed Webhook Retries
+├── reporting/         # Dashboard Projections, Analytics, PDF/CSV Reports, Saved Searches
+├── financial/         # Currency Rates, Asset Tax Write-Offs, Department Budget Allocations
+├── webhook/           # API Keys, Domain Event Subscriptions, Signed Webhook Retries
 └── AssetFlowApplication.java
 ```
 
@@ -34,7 +34,7 @@ com.assetflow/
 
 ## 3. Internal Module Layering & Rules
 
-Each bounded module must implement four internal layers:
+Each bounded module strictly implements four internal layers:
 
 ```text
 module/
