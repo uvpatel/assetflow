@@ -1,15 +1,23 @@
 package com.assetflow.asset.api;
 
 import com.assetflow.asset.application.AssetDepreciationUseCase;
+import com.assetflow.asset.domain.AssetDepreciationPeriodClosingRun;
 import com.assetflow.asset.domain.AssetDepreciationSchedule;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/organizations/{organizationId}/assets/{assetId}/depreciation")
+@RequestMapping("/api/v1/organizations/{organizationId}")
 public class AssetDepreciationController {
 
     private final AssetDepreciationUseCase useCase;
@@ -25,6 +33,12 @@ public class AssetDepreciationController {
             int usefulLifeMonths
     ) {}
 
+    public record RunPeriodClosingRequest(
+            int year,
+            int month,
+            int elapsedMonths
+    ) {}
+
     public record DepreciationResponse(
             UUID id,
             UUID organizationId,
@@ -37,7 +51,7 @@ public class AssetDepreciationController {
             BigDecimal accumulatedDepreciation
     ) {}
 
-    @PostMapping
+    @PostMapping("/assets/{assetId}/depreciation")
     public ResponseEntity<DepreciationResponse> createSchedule(
             @PathVariable UUID organizationId,
             @PathVariable UUID assetId,
@@ -53,7 +67,7 @@ public class AssetDepreciationController {
         return ResponseEntity.ok(toResponse(schedule));
     }
 
-    @PostMapping("/calculate")
+    @PostMapping("/assets/{assetId}/depreciation/calculate")
     public ResponseEntity<DepreciationResponse> calculate(
             @PathVariable UUID organizationId,
             @PathVariable UUID assetId,
@@ -62,12 +76,32 @@ public class AssetDepreciationController {
         return ResponseEntity.ok(toResponse(schedule));
     }
 
-    @GetMapping
+    @GetMapping("/assets/{assetId}/depreciation")
     public ResponseEntity<DepreciationResponse> getSchedule(
             @PathVariable UUID organizationId,
             @PathVariable UUID assetId) {
         AssetDepreciationSchedule schedule = useCase.getSchedule(organizationId, assetId);
         return ResponseEntity.ok(toResponse(schedule));
+    }
+
+    @PostMapping("/depreciation/period-close")
+    public ResponseEntity<AssetDepreciationPeriodClosingRun> runPeriodClosing(
+            @PathVariable UUID organizationId,
+            @RequestBody RunPeriodClosingRequest request) {
+        AssetDepreciationPeriodClosingRun run = useCase.runPeriodClosing(
+                organizationId,
+                request.year(),
+                request.month(),
+                request.elapsedMonths()
+        );
+        return ResponseEntity.ok(run);
+    }
+
+    @GetMapping("/depreciation/period-closing-runs")
+    public ResponseEntity<List<AssetDepreciationPeriodClosingRun>> getPeriodClosingRuns(
+            @PathVariable UUID organizationId) {
+        List<AssetDepreciationPeriodClosingRun> runs = useCase.getPeriodClosingRuns(organizationId);
+        return ResponseEntity.ok(runs);
     }
 
     private DepreciationResponse toResponse(AssetDepreciationSchedule schedule) {

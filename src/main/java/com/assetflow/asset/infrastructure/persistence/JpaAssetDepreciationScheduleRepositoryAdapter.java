@@ -4,6 +4,7 @@ import com.assetflow.asset.domain.AssetDepreciationSchedule;
 import com.assetflow.asset.domain.AssetDepreciationScheduleRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +27,14 @@ public class JpaAssetDepreciationScheduleRepositoryAdapter implements AssetDepre
     @Override
     public Optional<AssetDepreciationSchedule> findByOrganizationIdAndAssetId(UUID organizationId, UUID assetId) {
         return repository.findByOrganizationIdAndAssetId(organizationId, assetId).map(this::toDomain);
+    }
+
+    @Override
+    public List<AssetDepreciationSchedule> findByOrganizationId(UUID organizationId) {
+        return repository.findByOrganizationId(organizationId)
+                .stream()
+                .map(this::toDomain)
+                .toList();
     }
 
     private AssetDepreciationScheduleJpaEntity toEntity(AssetDepreciationSchedule domain) {
