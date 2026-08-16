@@ -48,6 +48,8 @@ public class UserAccountRepositoryImpl implements UserAccountRepository {
                 domain.getOrganizationId(),
                 domain.getStatus(),
                 domain.getRole(),
+                domain.getFailedLoginAttempts(),
+                domain.getLockedUntil(),
                 domain.getCreatedAt(),
                 domain.getUpdatedAt()
         );
@@ -61,6 +63,8 @@ public class UserAccountRepositoryImpl implements UserAccountRepository {
                 entity.getOrganizationId(),
                 entity.getStatus(),
                 entity.getRole(),
+                entity.getFailedLoginAttempts(),
+                entity.getLockedUntil(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

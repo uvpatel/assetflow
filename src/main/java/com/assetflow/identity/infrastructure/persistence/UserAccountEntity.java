@@ -36,6 +36,12 @@ public class UserAccountEntity {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
+    @Column(name = "failed_login_attempts", nullable = false)
+    private int failedLoginAttempts = 0;
+
+    @Column(name = "locked_until")
+    private Instant lockedUntil;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -46,13 +52,16 @@ public class UserAccountEntity {
     }
 
     public UserAccountEntity(UUID id, String email, String passwordHash, UUID organizationId,
-                             UserStatus status, UserRole role, Instant createdAt, Instant updatedAt) {
+                             UserStatus status, UserRole role, int failedLoginAttempts,
+                             Instant lockedUntil, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.email = email;
         this.passwordHash = passwordHash;
         this.organizationId = organizationId;
         this.status = status;
         this.role = role;
+        this.failedLoginAttempts = failedLoginAttempts;
+        this.lockedUntil = lockedUntil;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -69,6 +78,10 @@ public class UserAccountEntity {
     public void setStatus(UserStatus status) { this.status = status; }
     public UserRole getRole() { return role; }
     public void setRole(UserRole role) { this.role = role; }
+    public int getFailedLoginAttempts() { return failedLoginAttempts; }
+    public void setFailedLoginAttempts(int failedLoginAttempts) { this.failedLoginAttempts = failedLoginAttempts; }
+    public Instant getLockedUntil() { return lockedUntil; }
+    public void setLockedUntil(Instant lockedUntil) { this.lockedUntil = lockedUntil; }
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
