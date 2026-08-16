@@ -2,7 +2,13 @@ package com.assetflow.asset.application;
 
 import com.assetflow.asset.api.dto.CreateCategoryFieldDefinitionRequest;
 import com.assetflow.asset.api.dto.SetAssetCustomFieldValueRequest;
-import com.assetflow.asset.domain.*;
+import com.assetflow.asset.domain.AssetCategoryRepository;
+import com.assetflow.asset.domain.AssetCustomFieldValue;
+import com.assetflow.asset.domain.AssetCustomFieldValueRepository;
+import com.assetflow.asset.domain.AssetRepository;
+import com.assetflow.asset.domain.CategoryFieldDefinition;
+import com.assetflow.asset.domain.CategoryFieldDefinitionRepository;
+import com.assetflow.shared.error.DomainViolationException;
 import com.assetflow.shared.error.ResourceNotFoundException;
 import com.assetflow.shared.security.TenantContext;
 import org.springframework.stereotype.Service;
@@ -46,7 +52,11 @@ public class CustomFieldUseCase {
                 request.getFieldLabel(),
                 request.getFieldType(),
                 request.isRequired(),
-                request.getOptions()
+                request.getOptions(),
+                request.getValidationRegex(),
+                request.getDefaultValue(),
+                request.getMinValue(),
+                request.getMaxValue()
         );
 
         return fieldDefinitionRepository.save(definition);
@@ -68,8 +78,13 @@ public class CustomFieldUseCase {
 
         List<AssetCustomFieldValue> result = new ArrayList<>();
         for (SetAssetCustomFieldValueRequest req : requests) {
-            if (!fieldDefinitionRepository.findById(req.getFieldDefinitionId()).isPresent()) {
-                throw new ResourceNotFoundException("CategoryFieldDefinition", req.getFieldDefinitionId());
+            CategoryFieldDefinition def = fieldDefinitionRepository.findById(req.getFieldDefinitionId())
+                    .orElseThrow(() -> new ResourceNotFoundException("CategoryFieldDefinition", req.getFieldDefinitionId()));
+
+            try {
+                def.validateFieldValue(req.getFieldValue());
+            } catch (IllegalArgumentException e) {
+                throw new DomainViolationException("Invalid Field Value", e.getMessage());
             }
 
             Optional<AssetCustomFieldValue> existing = fieldValueRepository.findByAssetIdAndFieldDefinitionId(assetId, req.getFieldDefinitionId());
