@@ -1,6 +1,7 @@
 package com.assetflow.asset.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 public class ConsumableBatch {
@@ -55,6 +56,18 @@ public class ConsumableBatch {
             throw new IllegalStateException("Insufficient quantity remaining in batch");
         }
         this.currentQuantity -= quantity;
+    }
+
+    public boolean isExpired(Instant referenceTime) {
+        return expiryDate != null && referenceTime.isAfter(expiryDate);
+    }
+
+    public boolean isExpiringWithin(Instant referenceTime, int daysThreshold) {
+        if (expiryDate == null || isExpired(referenceTime)) {
+            return false;
+        }
+        Instant threshold = referenceTime.plus(daysThreshold, ChronoUnit.DAYS);
+        return !expiryDate.isAfter(threshold);
     }
 
     public UUID getId() { return id; }
