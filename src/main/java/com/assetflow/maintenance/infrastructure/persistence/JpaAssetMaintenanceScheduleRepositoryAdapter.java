@@ -37,6 +37,14 @@ public class JpaAssetMaintenanceScheduleRepositoryAdapter implements AssetMainte
                 .toList();
     }
 
+    @Override
+    public List<AssetMaintenanceSchedule> findByOrganizationId(UUID organizationId) {
+        return repository.findByOrganizationId(organizationId)
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
     private AssetMaintenanceScheduleJpaEntity toEntity(AssetMaintenanceSchedule domain) {
         AssetMaintenanceScheduleJpaEntity entity = new AssetMaintenanceScheduleJpaEntity();
         entity.setId(domain.getId());
@@ -47,6 +55,8 @@ public class JpaAssetMaintenanceScheduleRepositoryAdapter implements AssetMainte
         entity.setNextDueDate(domain.getNextDueDate());
         entity.setLastPerformedAt(domain.getLastPerformedAt());
         entity.setStatus(domain.getStatus().name());
+        entity.setAutoGenerateWorkOrder(domain.isAutoGenerateWorkOrder());
+        entity.setPriority(domain.getPriority());
         entity.setCreatedAt(domain.getCreatedAt());
         entity.setUpdatedAt(domain.getUpdatedAt());
         return entity;
@@ -62,6 +72,8 @@ public class JpaAssetMaintenanceScheduleRepositoryAdapter implements AssetMainte
                 entity.getNextDueDate(),
                 entity.getLastPerformedAt(),
                 AssetMaintenanceSchedule.ScheduleStatus.valueOf(entity.getStatus()),
+                entity.isAutoGenerateWorkOrder(),
+                entity.getPriority() != null ? entity.getPriority() : "MEDIUM",
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

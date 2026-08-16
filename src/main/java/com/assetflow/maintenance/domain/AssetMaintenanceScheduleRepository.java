@@ -8,4 +8,5 @@ public interface AssetMaintenanceScheduleRepository {
     AssetMaintenanceSchedule save(AssetMaintenanceSchedule schedule);
     Optional<AssetMaintenanceSchedule> findById(UUID id);
     List<AssetMaintenanceSchedule> findByOrganizationIdAndAssetId(UUID organizationId, UUID assetId);
+    List<AssetMaintenanceSchedule> findByOrganizationId(UUID organizationId);
 }

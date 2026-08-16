@@ -36,6 +36,12 @@ public class AssetMaintenanceScheduleJpaEntity {
     @Column(name = "status", nullable = false)
     private String status;
 
+    @Column(name = "auto_generate_work_order")
+    private boolean autoGenerateWorkOrder = true;
+
+    @Column(name = "priority")
+    private String priority = "MEDIUM";
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -67,6 +73,12 @@ public class AssetMaintenanceScheduleJpaEntity {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public boolean isAutoGenerateWorkOrder() { return autoGenerateWorkOrder; }
+    public void setAutoGenerateWorkOrder(boolean autoGenerateWorkOrder) { this.autoGenerateWorkOrder = autoGenerateWorkOrder; }
+
+    public String getPriority() { return priority; }
+    public void setPriority(String priority) { this.priority = priority; }
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }

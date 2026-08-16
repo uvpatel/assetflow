@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface SpringDataAssetMaintenanceScheduleRepository extends JpaRepository<AssetMaintenanceScheduleJpaEntity, UUID> {
     List<AssetMaintenanceScheduleJpaEntity> findByOrganizationIdAndAssetId(UUID organizationId, UUID assetId);
+    List<AssetMaintenanceScheduleJpaEntity> findByOrganizationId(UUID organizationId);
 }
