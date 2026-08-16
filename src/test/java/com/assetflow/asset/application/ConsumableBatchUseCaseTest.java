@@ -63,7 +63,6 @@ class ConsumableBatchUseCaseTest {
     @Test
     @DisplayName("Should generate reorder alerts for low stock assets")
     void shouldGenerateStockReorderAlerts() {
-        UUID assetId = UUID.randomUUID();
         ConsumableAsset lowStockAsset = ConsumableAsset.create(
                 orgId, "Printer Paper", "SKU-PAPER-01", UUID.randomUUID(), 5, 20, "Ream", new BigDecimal("5.50")
         );

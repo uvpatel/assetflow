@@ -42,6 +42,7 @@ public class ConsumableBatchUseCase {
 
     public ConsumableBatch createBatch(UUID organizationId, UUID assetId, String batchNumber, int quantity, Instant expiryDate) {
         ConsumableBatch batch = ConsumableBatch.create(organizationId, assetId, batchNumber, quantity, expiryDate);
+        log.info("Creating consumable batch {} for asset {} in org {}", batchNumber, assetId, organizationId);
         return repository.save(batch);
     }
 
