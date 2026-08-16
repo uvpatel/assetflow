@@ -50,12 +50,22 @@ public class JpaVendorContractRepositoryAdapter implements VendorContractReposit
         entity.setEndDate(domain.getEndDate());
         entity.setContractValue(domain.getContractValue());
         entity.setAutoRenew(domain.isAutoRenew());
+        entity.setNoticePeriodDays(domain.getNoticePeriodDays());
+        entity.setStatus(domain.getStatus().name());
         entity.setCreatedAt(domain.getCreatedAt());
         entity.setUpdatedAt(domain.getUpdatedAt());
         return entity;
     }
 
     private VendorContract toDomain(VendorContractJpaEntity entity) {
+        VendorContract.ContractStatus status = VendorContract.ContractStatus.ACTIVE;
+        if (entity.getStatus() != null) {
+            try {
+                status = VendorContract.ContractStatus.valueOf(entity.getStatus().toUpperCase());
+            } catch (Exception ignored) {
+            }
+        }
+
         return new VendorContract(
                 entity.getId(),
                 entity.getOrganizationId(),
@@ -66,6 +76,8 @@ public class JpaVendorContractRepositoryAdapter implements VendorContractReposit
                 entity.getEndDate(),
                 entity.getContractValue(),
                 entity.isAutoRenew(),
+                entity.getNoticePeriodDays() > 0 ? entity.getNoticePeriodDays() : 30,
+                status,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );

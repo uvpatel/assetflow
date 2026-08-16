@@ -3,7 +3,13 @@ package com.assetflow.shared.api;
 import com.assetflow.shared.application.VendorContractUseCase;
 import com.assetflow.shared.domain.VendorContract;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,7 +33,8 @@ public class VendorContractController {
             LocalDate startDate,
             LocalDate endDate,
             BigDecimal contractValue,
-            boolean isAutoRenew
+            boolean isAutoRenew,
+            int noticePeriodDays
     ) {}
 
     public record RenewContractRequest(
@@ -45,6 +52,8 @@ public class VendorContractController {
             LocalDate endDate,
             BigDecimal contractValue,
             boolean isAutoRenew,
+            int noticePeriodDays,
+            String status,
             boolean isExpired
     ) {}
 
@@ -60,7 +69,8 @@ public class VendorContractController {
                 request.startDate(),
                 request.endDate(),
                 request.contractValue(),
-                request.isAutoRenew()
+                request.isAutoRenew(),
+                request.noticePeriodDays()
         );
         return ResponseEntity.ok(toResponse(contract));
     }
@@ -71,6 +81,23 @@ public class VendorContractController {
             @RequestBody RenewContractRequest request) {
         VendorContract contract = useCase.renewContract(contractId, request.newEndDate(), request.newContractValue());
         return ResponseEntity.ok(toResponse(contract));
+    }
+
+    @PostMapping("/{contractId}/terminate")
+    public ResponseEntity<ContractResponse> terminateContract(
+            @PathVariable UUID organizationId,
+            @PathVariable UUID contractId) {
+        VendorContract contract = useCase.terminateContract(organizationId, contractId);
+        return ResponseEntity.ok(toResponse(contract));
+    }
+
+    @GetMapping("/renewal-notices")
+    public ResponseEntity<List<ContractResponse>> getRenewalNotices(@PathVariable UUID organizationId) {
+        List<ContractResponse> list = useCase.getContractsRequiringRenewalNotice(organizationId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/expiring")
@@ -95,6 +122,8 @@ public class VendorContractController {
                 c.getEndDate(),
                 c.getContractValue(),
                 c.isAutoRenew(),
+                c.getNoticePeriodDays(),
+                c.getStatus().name(),
                 c.isExpired(LocalDate.now())
         );
     }

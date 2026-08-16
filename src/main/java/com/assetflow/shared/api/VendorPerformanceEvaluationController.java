@@ -3,7 +3,12 @@ package com.assetflow.shared.api;
 import com.assetflow.shared.application.VendorPerformanceEvaluationUseCase;
 import com.assetflow.shared.domain.VendorPerformanceEvaluation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -62,6 +67,14 @@ public class VendorPerformanceEvaluationController {
                 request.evaluationNotes()
         );
         return ResponseEntity.ok(toResponse(eval));
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<VendorPerformanceEvaluationUseCase.VendorPerformanceSummary> getPerformanceSummary(
+            @PathVariable UUID organizationId,
+            @PathVariable UUID vendorId) {
+        VendorPerformanceEvaluationUseCase.VendorPerformanceSummary summary = useCase.getVendorPerformanceSummary(organizationId, vendorId);
+        return ResponseEntity.ok(summary);
     }
 
     @GetMapping

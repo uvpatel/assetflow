@@ -41,6 +41,12 @@ public class VendorContractJpaEntity {
     @Column(name = "is_auto_renew", nullable = false)
     private boolean isAutoRenew;
 
+    @Column(name = "notice_period_days")
+    private int noticePeriodDays = 30;
+
+    @Column(name = "status")
+    private String status = "ACTIVE";
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -75,6 +81,12 @@ public class VendorContractJpaEntity {
 
     public boolean isAutoRenew() { return isAutoRenew; }
     public void setAutoRenew(boolean autoRenew) { isAutoRenew = autoRenew; }
+
+    public int getNoticePeriodDays() { return noticePeriodDays; }
+    public void setNoticePeriodDays(int noticePeriodDays) { this.noticePeriodDays = noticePeriodDays; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
