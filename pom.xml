@@ -26,6 +26,7 @@
         <archunit.version>1.4.0</archunit.version>
         <testcontainers.version>1.20.4</testcontainers.version>
         <shedlock.version>5.16.0</shedlock.version>
+        <flyway.version>10.22.0</flyway.version>
     </properties>
 
     <dependencyManagement>
