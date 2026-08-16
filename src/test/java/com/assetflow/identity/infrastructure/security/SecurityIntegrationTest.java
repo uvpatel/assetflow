@@ -8,6 +8,8 @@ import com.assetflow.identity.application.SignupUseCase;
 import com.assetflow.identity.application.port.TokenProviderPort;
 import com.assetflow.reporting.api.BulkImportBatchController;
 import com.assetflow.reporting.application.BulkImportBatchUseCase;
+import com.assetflow.shared.logging.CorrelationIdFilter;
+import com.assetflow.shared.security.RateLimitingFilter;
 import com.assetflow.shared.security.TenantContext;
 import com.assetflow.shared.security.TenantContextFilter;
 import org.junit.jupiter.api.AfterEach;
@@ -25,12 +27,10 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.assetflow.shared.logging.CorrelationIdFilter;
-import com.assetflow.shared.security.RateLimitingFilter;
 
 @WebMvcTest(controllers = {AuthController.class, BulkImportBatchController.class})
 @Import({SecurityConfig.class, JwtAuthenticationFilter.class, TenantContextFilter.class, RateLimitingFilter.class, CorrelationIdFilter.class})
@@ -71,11 +71,16 @@ class SecurityIntegrationTest {
     }
 
     @Test
-    void publicEndpointsShouldBeAccessibleWithoutAuthentication() throws Exception {
+    void publicEndpointsShouldBeAccessibleWithoutAuthenticationAndIncludeSecurityHeaders() throws Exception {
         mockMvc.perform(post("/api/v1/auth/login")
+                        .secure(true)
                         .contentType("application/json")
                         .content("{\"email\":\"test@example.com\",\"password\":\"password\"}"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(header().string("X-Content-Type-Options", "nosniff"))
+                .andExpect(header().string("X-Frame-Options", "DENY"))
+                .andExpect(header().string("Strict-Transport-Security", "max-age=31536000 ; includeSubDomains"))
+                .andExpect(header().string("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none';"));
     }
 
     @Test
@@ -97,6 +102,8 @@ class SecurityIntegrationTest {
         when(bulkImportBatchUseCase.listBatches(any())).thenReturn(List.of());
 
         mockMvc.perform(get("/api/v1/import-batches"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(header().string("X-Content-Type-Options", "nosniff"))
+                .andExpect(header().string("X-Frame-Options", "DENY"));
     }
 }
