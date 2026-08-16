@@ -1,5 +1,7 @@
 package com.assetflow.shared.error;
 
+import com.assetflow.shared.logging.CorrelationIdFilter;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -17,6 +19,14 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private void enrichProblemDetail(ProblemDetail problemDetail) {
+        problemDetail.setProperty("timestamp", Instant.now());
+        String correlationId = MDC.get(CorrelationIdFilter.MDC_CORRELATION_ID_KEY);
+        if (correlationId != null && !correlationId.isBlank()) {
+            problemDetail.setProperty("correlationId", correlationId);
+        }
+    }
+
     @ExceptionHandler(BusinessException.class)
     public ProblemDetail handleBusinessException(BusinessException ex) {
         HttpStatus status = HttpStatus.resolve(ex.getStatus());
@@ -27,7 +37,7 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, ex.getMessage());
         problemDetail.setTitle(ex.getTitle());
         problemDetail.setType(ex.getType());
-        problemDetail.setProperty("timestamp", Instant.now());
+        enrichProblemDetail(problemDetail);
 
         if (ex.getProperties() != null && !ex.getProperties().isEmpty()) {
             ex.getProperties().forEach(problemDetail::setProperty);
@@ -44,7 +54,7 @@ public class GlobalExceptionHandler {
         );
         problemDetail.setTitle("Concurrency Conflict");
         problemDetail.setType(URI.create("about:blank"));
-        problemDetail.setProperty("timestamp", Instant.now());
+        enrichProblemDetail(problemDetail);
         return problemDetail;
     }
 
@@ -56,7 +66,7 @@ public class GlobalExceptionHandler {
         );
         problemDetail.setTitle("Validation Failure");
         problemDetail.setType(URI.create("about:blank"));
-        problemDetail.setProperty("timestamp", Instant.now());
+        enrichProblemDetail(problemDetail);
 
         Map<String, String> errors = new HashMap<>();
         for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
@@ -75,7 +85,7 @@ public class GlobalExceptionHandler {
         );
         problemDetail.setTitle("Access Denied");
         problemDetail.setType(URI.create("about:blank"));
-        problemDetail.setProperty("timestamp", Instant.now());
+        enrichProblemDetail(problemDetail);
         return problemDetail;
     }
 
@@ -87,7 +97,7 @@ public class GlobalExceptionHandler {
         );
         problemDetail.setTitle("Internal Server Error");
         problemDetail.setType(URI.create("about:blank"));
-        problemDetail.setProperty("timestamp", Instant.now());
+        enrichProblemDetail(problemDetail);
         return problemDetail;
     }
 }
